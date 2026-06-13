@@ -181,7 +181,7 @@
                             <span class="text-xs sm:text-sm font-semibold text-white">Stok Keluar</span>
                         </button>
                         <button id="btn-text-update" onclick="openModal('modal-text-update')" class="glass-card p-4 rounded-2xl hover:bg-slate-800 transition-all flex flex-col items-center justify-center gap-3 group relative overflow-hidden">
-                            <div class="absolute top-0 right-0 bg-purple-500 text-white text-[8px] font-bold px-2 py-0.5 rounded-bl-lg">BARU</div>
+                            <div class="absolute top-0 right-0 bg-purple-500 text-white text-[8px] font-bold px-2 py-0.5 rounded-bl-lg">SYNC</div>
                             <div class="w-12 h-12 rounded-full bg-purple-500/10 text-purple-400 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
                                 <i class="fas fa-file-signature"></i>
                             </div>
@@ -266,13 +266,17 @@
                 <h3 class="text-lg font-bold text-white flex items-center gap-2"><i class="fas fa-file-signature text-purple-400"></i> Catatan Manual</h3>
                 <button onclick="closeModal('modal-text-update')" class="text-slate-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
             </div>
-            <p class="text-xs text-slate-400 mb-4 shrink-0">
-                Tempel catatan manual di sini untuk menyesuaikan stok sekaligus. <br>Format: <b>1. Nama Produk</b> (baris baru) <b>S= 19 &lt;30&gt;</b> (30 = stok di luar rak).
+            <p class="text-xs text-slate-400 mb-3 shrink-0">
+                Tempel catatan manual di sini untuk menyesuaikan stok sekaligus. <br>
+                <span class="text-amber-400 font-semibold block mt-1 bg-amber-500/10 p-2 rounded-lg border border-amber-500/20">
+                    <i class="fas fa-info-circle"></i> Jika Anda memasukkan lebih dari 1 catatan di hari yang sama, sistem otomatis akan <b>menimpa (overwrite)</b> data sebelumnya dan memastikan stok aplikasi persis sesuai dengan catatan terakhir Anda.
+                </span>
+                <span class="block mt-2">Format: <b>1. Nama Produk</b> (baris baru) <b>S= 19 &lt;30&gt;</b> (30 = stok di luar rak).</span>
             </p>
             <form onsubmit="processTextUpdate(event)" class="flex-1 flex flex-col min-h-[300px]">
                 <textarea id="text-update-input" required class="flex-1 w-full bg-slate-900 border border-slate-700 rounded-xl p-4 text-sm text-white focus:outline-none focus:border-purple-500 font-mono resize-none hide-scrollbar mb-4" placeholder="Contoh:&#10;&#10;1. Afandra&#10;S= 19 <30>&#10;M= 15 <50>&#10;L= 12 <74>&#10;..."></textarea>
                 <button type="submit" class="w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-purple-500/20 shrink-0 flex items-center justify-center gap-2">
-                    <i class="fas fa-magic"></i> Sinkronisasi Stok Sekarang
+                    <i class="fas fa-magic"></i> Sinkronisasi ke Catatan Terakhir
                 </button>
             </form>
         </div>
@@ -1021,7 +1025,9 @@ function doPost(e) {
                 const prodMatch = line.match(productRegex);
                 if (prodMatch) {
                     currentProduct = prodMatch[1].trim().toLowerCase();
-                    parsedData[currentProduct] = {};
+                    // LOGIKA: Jika produk yang sama ditemukan lagi dalam teks, 
+                    // objek akan di-reset (overwrite) dengan data blok yang paling baru/terakhir.
+                    parsedData[currentProduct] = {}; 
                 } else if (currentProduct) {
                     const sizeMatch = line.match(sizeRegex);
                     if (sizeMatch) {
@@ -1076,7 +1082,7 @@ function doPost(e) {
                             const oldTotal = p.sizes[size];
                             const newTotal = newData[size].r + newData[size].l;
                             
-                            // Hitung transaksi berdasarkan selisih Total
+                            // Menghitung selisih hanya untuk menyimpan riwayat (history/audit)
                             if (newTotal !== oldTotal) {
                                 const diff = newTotal - oldTotal;
                                 const type = diff > 0 ? 'IN' : 'OUT';
@@ -1090,7 +1096,8 @@ function doPost(e) {
                                 hasChange = true;
                             }
                             
-                            // Terapkan pembaruan nilai final
+                            // LOGIKA UTAMA: Terapkan penimpaan (overwrite) nilai mutlak.
+                            // Aplikasi menjadikan catatan terakhir yang masuk sebagai satu-satunya data yang benar.
                             p.sizes[size] = newTotal;
                             p.sizeDetails[size] = { r: newData[size].r, l: newData[size].l };
                         }
@@ -1105,17 +1112,18 @@ function doPost(e) {
 
             if (updatedCount > 0) {
                 state.transactions.unshift(...transactionsToAdd);
-                logActivity('Update via Teks', `Berhasil update ${updatedCount} produk via catatan`);
+                // Memberikan keterangan jelas bahwa ini adalah Sinkronisasi Overwrite
+                logActivity('Sinkronisasi (Catatan)', `Stok ${updatedCount} produk diperbarui mengikuti catatan terakhir`);
                 saveData();
-                pushToGAS('Update via Teks', `Update massal via teks untuk ${updatedCount} produk`, transactionsToAdd);
+                pushToGAS('Sinkronisasi (Catatan)', `Update mutlak (overwrite) via teks untuk ${updatedCount} produk mengikuti data terakhir`, transactionsToAdd);
                 
-                showToast(`Berhasil sinkronisasi ${updatedCount} produk!`);
+                showToast(`Sinkronisasi berhasil! Data mengikuti catatan terakhir.`);
                 renderDashboard();
                 if(!document.getElementById('tab-rekap').classList.contains('hidden')) renderRekapStok();
                 closeModal('modal-text-update');
                 document.getElementById('text-update-input').value = '';
             } else {
-                showToast('Stok sudah sinkron atau format tidak cocok', 'error');
+                showToast('Stok saat ini sudah persis sama dengan catatan', 'error');
             }
         }
 
@@ -1186,7 +1194,6 @@ function doPost(e) {
                     
                     <div class="bg-slate-900/50 p-4 rounded-2xl border border-slate-800/80">
                         <span class="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider block mb-3"><i class="fas fa-arrows-left-right text-[8px] text-slate-500"></i> Total per Ukuran & Rincian Stok</span>
-                        <!-- Menggunakan grid-cols-3 pada mobile agar elemen lebih besar dan tidak menumpuk, lalu kembali ke sm:grid-cols-6 di layar PC/Tablet -->
                         <div class="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-2 text-center text-xs">
                             ${sizeCards}
                         </div>
@@ -1510,7 +1517,7 @@ function doPost(e) {
                 if(log.action.includes('Keluar')) iconStr = '<i class="fas fa-minus-circle text-rose-500"></i>';
                 if(log.action.includes('Edit')) iconStr = '<i class="fas fa-edit text-amber-500"></i>';
                 if(log.action.includes('Hapus')) iconStr = '<i class="fas fa-trash-alt text-rose-500"></i>';
-                if(log.action.includes('Login')) iconStr = '<i class="fas fa-sign-in-alt text-amber-500"></i>';
+                if(log.action.includes('Sinkronisasi') || log.action.includes('Login')) iconStr = '<i class="fas fa-sync text-amber-500"></i>';
 
                 list.innerHTML += `
                     <div class="flex gap-4 border-b border-slate-800/50 pb-4 last:border-0 last:pb-0">
