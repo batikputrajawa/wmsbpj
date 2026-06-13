@@ -98,7 +98,7 @@
                     <div>
                         <h1 class="text-sm sm:text-base font-bold text-white leading-tight">WMS Putra Jawa</h1>
                         <p class="text-[10px] text-slate-400 flex items-center gap-1">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Online
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500" id="sync-status-indicator"></span> Online
                         </p>
                     </div>
                 </div>
@@ -167,7 +167,7 @@
                 <!-- Quick Actions -->
                 <div class="space-y-3">
                     <h3 class="text-sm font-bold text-white flex items-center gap-2"><i class="fas fa-bolt text-amber-500"></i> Aksi Cepat</h3>
-                    <div id="quick-actions-container" class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+                    <div id="quick-actions-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
                         <button onclick="openModal('modal-in')" class="glass-card p-4 rounded-2xl hover:bg-slate-800 transition-all flex flex-col items-center justify-center gap-3 group">
                             <div class="w-12 h-12 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
                                 <i class="fas fa-plus"></i>
@@ -180,6 +180,13 @@
                             </div>
                             <span class="text-xs sm:text-sm font-semibold text-white">Stok Keluar</span>
                         </button>
+                        <button id="btn-text-update" onclick="openModal('modal-text-update')" class="glass-card p-4 rounded-2xl hover:bg-slate-800 transition-all flex flex-col items-center justify-center gap-3 group relative overflow-hidden">
+                            <div class="absolute top-0 right-0 bg-purple-500 text-white text-[8px] font-bold px-2 py-0.5 rounded-bl-lg">BARU</div>
+                            <div class="w-12 h-12 rounded-full bg-purple-500/10 text-purple-400 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                                <i class="fas fa-file-signature"></i>
+                            </div>
+                            <span class="text-xs sm:text-sm font-semibold text-white text-center">Catatan Manual</span>
+                        </button>
                         <button id="btn-quick-add" onclick="openModal('modal-add-product')" class="glass-card p-4 rounded-2xl hover:bg-slate-800 transition-all flex flex-col items-center justify-center gap-3 group relative overflow-hidden">
                             <div class="absolute top-0 right-0 bg-amber-500 text-slate-900 text-[8px] font-bold px-2 py-0.5 rounded-bl-lg">ADMIN</div>
                             <div class="w-12 h-12 rounded-full bg-amber-500/10 text-amber-500 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
@@ -187,19 +194,18 @@
                             </div>
                             <span class="text-xs sm:text-sm font-semibold text-white">Tambah Produk</span>
                         </button>
-                        <!-- Pindahan Menu Edit Produk ke Dashboard -->
                         <button id="btn-quick-edit" onclick="openModal('modal-select-edit')" class="glass-card p-4 rounded-2xl hover:bg-slate-800 transition-all flex flex-col items-center justify-center gap-3 group relative overflow-hidden">
                             <div class="absolute top-0 right-0 bg-amber-500 text-slate-900 text-[8px] font-bold px-2 py-0.5 rounded-bl-lg">ADMIN</div>
                             <div class="w-12 h-12 rounded-full bg-blue-500/10 text-blue-400 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
                                 <i class="fas fa-edit"></i>
                             </div>
-                            <span class="text-xs sm:text-sm font-semibold text-white text-center">Edit / Hapus Produk</span>
+                            <span class="text-xs sm:text-sm font-semibold text-white text-center">Edit / Hapus</span>
                         </button>
                     </div>
                 </div>
             </div>
 
-            <!-- ====== TAB: REKAP STOK (DIUBAH MENJADI CARD GRID) ====== -->
+            <!-- ====== TAB: REKAP STOK ====== -->
             <div id="tab-rekap" class="hidden fade-in space-y-4">
                 <div class="flex flex-col sm:flex-row gap-3 justify-between items-start sm:items-center">
                     <h2 class="text-lg font-bold text-white">Rekap Stok Realtime</h2>
@@ -209,7 +215,6 @@
                     </div>
                 </div>
                 
-                <!-- Container Card Grid -->
                 <div id="rekap-grid-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <!-- Data populated dynamically by JS -->
                 </div>
@@ -253,6 +258,25 @@
     </div>
 
     <!-- ================= MODALS ================= -->
+
+    <!-- Modal: Catatan Manual (Update Stok via Teks) -->
+    <div id="modal-text-update" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay hidden opacity-0 transition-opacity">
+        <div class="glass-card w-full max-w-lg rounded-3xl p-6 transform scale-95 transition-transform max-h-[90vh] flex flex-col" id="modal-text-update-content">
+            <div class="flex justify-between items-center mb-5 shrink-0">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2"><i class="fas fa-file-signature text-purple-400"></i> Catatan Manual</h3>
+                <button onclick="closeModal('modal-text-update')" class="text-slate-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <p class="text-xs text-slate-400 mb-4 shrink-0">
+                Tempel catatan manual di sini untuk menyesuaikan stok sekaligus. <br>Format: <b>1. Nama Produk</b> (baris baru) <b>S= 19 &lt;30&gt;</b> (30 = stok di luar rak).
+            </p>
+            <form onsubmit="processTextUpdate(event)" class="flex-1 flex flex-col min-h-[300px]">
+                <textarea id="text-update-input" required class="flex-1 w-full bg-slate-900 border border-slate-700 rounded-xl p-4 text-sm text-white focus:outline-none focus:border-purple-500 font-mono resize-none hide-scrollbar mb-4" placeholder="Contoh:&#10;&#10;1. Afandra&#10;S= 19 <30>&#10;M= 15 <50>&#10;L= 12 <74>&#10;..."></textarea>
+                <button type="submit" class="w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-purple-500/20 shrink-0 flex items-center justify-center gap-2">
+                    <i class="fas fa-magic"></i> Sinkronisasi Stok Sekarang
+                </button>
+            </form>
+        </div>
+    </div>
 
     <!-- Modal: Pilih Produk untuk Diedit (Admin Only) -->
     <div id="modal-select-edit" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay hidden opacity-0 transition-opacity">
@@ -409,7 +433,7 @@
                 </div>
 
                 <div class="border-t border-slate-700 pt-3">
-                    <label class="block text-xs font-semibold text-slate-400 mb-2">Penyesuaian Stok per Ukuran</label>
+                    <label class="block text-xs font-semibold text-slate-400 mb-2">Penyesuaian Total Stok per Ukuran</label>
                     <div class="grid grid-cols-3 sm:grid-cols-6 gap-2">
                         <div><span class="text-[10px] text-slate-500 ml-1">S</span><input type="number" id="edit-s" min="0" required class="w-full bg-slate-900 border border-slate-700 rounded-lg py-1.5 px-2 text-center text-sm text-white focus:outline-none focus:border-amber-500 font-mono"></div>
                         <div><span class="text-[10px] text-slate-500 ml-1">M</span><input type="number" id="edit-m" min="0" required class="w-full bg-slate-900 border border-slate-700 rounded-lg py-1.5 px-2 text-center text-sm text-white focus:outline-none focus:border-amber-500 font-mono"></div>
@@ -478,9 +502,9 @@
                     <p class="text-rose-400 font-bold mb-2"><i class="fas fa-exclamation-triangle"></i> PENTING (UPDATE SCRIPT):</p>
                     <ol class="list-decimal list-inside space-y-2">
                         <li>Buka <a href="https://script.google.com/" target="_blank" class="text-blue-400 underline font-bold">Google Apps Script</a>.</li>
-                        <li>Salin kode di bawah ini, dan <b>timpa semua (replace)</b> kode lama Anda.</li>
-                        <li>Klik <b>Deploy > New Deployment</b> (Jangan manage deployment agar riwayat transaksi aktif).</li>
-                        <li>Pastikan akses diatur ke: <b>Anyone</b>. Perbarui URL Web App jika URL berubah.</li>
+                        <li>Salin kode di bawah ini, dan <b>timpa semua (replace)</b> kode lama Anda. (Update kolom SizeDetail)</li>
+                        <li>Klik <b>Deploy > New Deployment</b>.</li>
+                        <li>Pastikan akses diatur ke: <b>Anyone</b>. Perbarui URL Web App di bawah jika berubah.</li>
                     </ol>
                 </div>
 
@@ -490,11 +514,6 @@
                         <textarea id="gas-script-code" readonly class="w-full h-32 bg-slate-900 border border-slate-700 rounded-xl p-3 text-[10px] font-mono text-slate-400 focus:outline-none"></textarea>
                         <button onclick="copyGasScript()" class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white px-2 py-1 rounded text-[10px]">Copy</button>
                     </div>
-                </div>
-
-                <div class="bg-slate-800/50 border border-slate-700 p-4 rounded-2xl text-xs space-y-2">
-                    <p class="font-semibold text-cyan-400 flex items-center gap-2"><i class="fas fa-link"></i> Web App URL Aktif (Permanen):</p>
-                    <p class="font-mono text-[10px] text-slate-400 break-all bg-slate-900 p-2 rounded border border-slate-800">https://script.google.com/macros/s/AKfycbx9G6s4lUQtpmqbYuWuxBKCJ8cZYT3lx-tdHsnbP8kIyPX8Alwn6E4kdBKvVKInk0RDjg/exec</p>
                 </div>
 
                 <button onclick="pullFromGAS()" class="w-full bg-cyan-500 hover:bg-cyan-600 text-slate-900 font-bold py-3 rounded-xl transition-all flex justify-center items-center gap-2">
@@ -513,35 +532,21 @@
             logs: [] 
         };
 
-        // GAS URL Permanen (Kunci Integrasi Maswin)
         const GAS_URL = "https://script.google.com/macros/s/AKfycbxqxV2SWxMJqglA2v7oVqVnF_5zK6_ZKejqUIW4VTRnLPrRmN0dH1JLf886C_5vDQNtAg/exec";
 
-        // === FUNGSI BANTUAN UNTUK GAMBAR ===
         const FALLBACK_IMG = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIj48cmVjdCB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgZmlsbD0iIzMzNDE1NSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmaWxsPSIjOTRhM2I4IiBmb250LXNpemU9IjEyIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk5vIEltYWdlPC90ZXh0Pjwvc3ZnPg==";
         const ERROR_IMG = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIj48cmVjdCB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgZmlsbD0iIzMzNDE1NSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmaWxsPSIjOTRhM2I4IiBmb250LXNpemU9IjEyIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkVycm9yPC90ZXh0Pjwvc3ZnPg==";
 
         function getDisplayImageUrl(url) {
             if (!url || url.trim() === '') return '';
-            
             let fileId = null;
-            
-            // Pola 1: Mencari ID dari URL format /file/d/ID_FILE/...
             const match1 = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-            if (match1 && match1[1]) {
-                fileId = match1[1];
-            } else {
-                // Pola 2: Mencari ID dari URL format ?id=ID_FILE...
+            if (match1 && match1[1]) { fileId = match1[1]; } 
+            else {
                 const match2 = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-                if (match2 && match2[1]) {
-                    fileId = match2[1];
-                }
+                if (match2 && match2[1]) { fileId = match2[1]; }
             }
-            
-            if (fileId) {
-                // Menggunakan endpoint thumbnail Drive yang aman dari blokir CORS
-                return `https://drive.google.com/thumbnail?id=${fileId}&sz=w800`;
-            }
-            
+            if (fileId) return `https://drive.google.com/thumbnail?id=${fileId}&sz=w800`;
             return url;
         }
 
@@ -551,8 +556,8 @@ function setup() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   if (!ss.getSheetByName("Stok_Barang")) {
     var sheet = ss.insertSheet("Stok_Barang");
-    sheet.appendRow(["SKU", "Nama Produk", "S", "M", "L", "XL", "XXL", "XXXL", "Total", "Foto URL"]);
-    sheet.getRange("A1:J1").setFontWeight("bold").setBackground("#f3f4f6");
+    sheet.appendRow(["SKU", "Nama Produk", "S", "M", "L", "XL", "XXL", "XXXL", "Total", "Foto URL", "SizeDetail"]);
+    sheet.getRange("A1:K1").setFontWeight("bold").setBackground("#f3f4f6");
   }
   if (!ss.getSheetByName("Riwayat")) {
     var sheet = ss.insertSheet("Riwayat");
@@ -593,16 +598,17 @@ function doPost(e) {
     else if (action === "sync_data") {
        var sheetStok = ss.getSheetByName("Stok_Barang");
        if(sheetStok.getLastRow() > 1) {
-          sheetStok.getRange(2, 1, sheetStok.getLastRow()-1, 10).clearContent();
+          sheetStok.getRange(2, 1, sheetStok.getLastRow()-1, 11).clearContent();
        }
        var products = params.products || [];
        var rows = [];
        products.forEach(function(p) {
          var total = p.sizes.S + p.sizes.M + p.sizes.L + p.sizes.XL + p.sizes.XXL + p.sizes.XXXL;
-         rows.push([p.sku, p.nama, p.sizes.S, p.sizes.M, p.sizes.L, p.sizes.XL, p.sizes.XXL, p.sizes.XXXL, total, p.foto || ""]);
+         var sd = p.sizeDetails ? JSON.stringify(p.sizeDetails) : "{}";
+         rows.push([p.sku, p.nama, p.sizes.S, p.sizes.M, p.sizes.L, p.sizes.XL, p.sizes.XXL, p.sizes.XXXL, total, p.foto || "", sd]);
        });
        if(rows.length > 0) {
-         sheetStok.getRange(2, 1, rows.length, 10).setValues(rows);
+         sheetStok.getRange(2, 1, rows.length, 11).setValues(rows);
        }
 
        var sheetLog = ss.getSheetByName("Riwayat");
@@ -625,10 +631,13 @@ function doPost(e) {
        var data = sheetStok.getDataRange().getValues();
        var products = [];
        for(var i=1; i<data.length; i++) {
+          var sd = {};
+          try { sd = JSON.parse(data[i][10] || "{}"); } catch(e) {}
           products.push({
             sku: data[i][0], nama: data[i][1],
             sizes: { S: Number(data[i][2])||0, M: Number(data[i][3])||0, L: Number(data[i][4])||0, XL: Number(data[i][5])||0, XXL: Number(data[i][6])||0, XXXL: Number(data[i][7])||0 },
-            foto: data[i][9] || ""
+            foto: data[i][9] || "",
+            sizeDetails: sd
           });
        }
        response.products = products;
@@ -707,23 +716,23 @@ function doPost(e) {
             document.getElementById('gas-script-code').value = GAS_SCRIPT_TEMPLATE;
             updateSyncIndicator();
 
-            const savedState = localStorage.getItem('wms_bpj_state_v3');
+            const savedState = localStorage.getItem('wms_bpj_state_v5');
             if (savedState) {
                 state = JSON.parse(savedState);
             } else {
                 state.products = [
-                    { sku: 'BPJ-001', nama: 'Afandra', foto: '', sizes: { S: 49, M: 67, L: 86, XL: 83, XXL: 14, XXXL: 33 } },
-                    { sku: 'BPJ-002', nama: 'Yudhistir Burgundy', foto: '', sizes: { S: 8, M: 21, L: 31, XL: 29, XXL: 5, XXXL: 8 } },
-                    { sku: 'BPJ-003', nama: 'Ghandy', foto: '', sizes: { S: 10, M: 28, L: 32, XL: 31, XXL: 7, XXXL: 10 } },
-                    { sku: 'BPJ-004', nama: 'Aryan', foto: '', sizes: { S: 10, M: 24, L: 32, XL: 33, XXL: 7, XXXL: 10 } },
-                    { sku: 'BPJ-005', nama: 'Jawaning', foto: '', sizes: { S: 10, M: 14, L: 37, XL: 38, XXL: 8, XXXL: 10 } },
-                    { sku: 'BPJ-006', nama: 'Dewat', foto: '', sizes: { S: 15, M: 24, L: 80, XL: 74, XXL: 31, XXXL: 35 } },
-                    { sku: 'BPJ-007', nama: 'Dhikary', foto: '', sizes: { S: 7, M: 25, L: 40, XL: 33, XXL: 7, XXXL: 9 } },
-                    { sku: 'BPJ-008', nama: 'Oshady', foto: '', sizes: { S: 7, M: 15, L: 14, XL: 32, XXL: 9, XXXL: 16 } },
-                    { sku: 'BPJ-009', nama: 'Yudhistir Navy', foto: '', sizes: { S: 10, M: 14, L: 33, XL: 33, XXL: 11, XXXL: 16 } },
-                    { sku: 'BPJ-010', nama: 'Arkatama Brown', foto: '', sizes: { S: 9, M: 9, L: 32, XL: 34, XXL: 16, XXXL: 17 } },
-                    { sku: 'BPJ-011', nama: 'Adhikary', foto: '', sizes: { S: 10, M: 14, L: 44, XL: 36, XXL: 7, XXXL: 10 } },
-                    { sku: 'BPJ-012', nama: 'Thevana', foto: '', sizes: { S: 28, M: 6, L: 22, XL: 44, XXL: 3, XXXL: 25 } }
+                    { sku: 'BPJ-001', nama: 'Afandra', foto: '', sizes: { S: 49, M: 65, L: 86, XL: 83, XXL: 14, XXXL: 33 }, sizeDetails: { S:{r:19,l:30}, M:{r:15,l:50}, L:{r:12,l:74}, XL:{r:9,l:74}, XXL:{r:14,l:0}, XXXL:{r:15,l:18} } },
+                    { sku: 'BPJ-002', nama: 'Yudhistir Burgundy', foto: '', sizes: { S: 8, M: 18, L: 31, XL: 29, XXL: 5, XXXL: 8 }, sizeDetails: { S:{r:8,l:0}, M:{r:8,l:10}, L:{r:1,l:30}, XL:{r:9,l:20}, XXL:{r:5,l:0}, XXXL:{r:8,l:0} } },
+                    { sku: 'BPJ-003', nama: 'Ghandy', foto: '', sizes: { S: 10, M: 25, L: 32, XL: 31, XXL: 7, XXXL: 10 }, sizeDetails: { S:{r:5,l:5}, M:{r:5,l:20}, L:{r:2,l:30}, XL:{r:11,l:20}, XXL:{r:7,l:0}, XXXL:{r:10,l:0} } },
+                    { sku: 'BPJ-004', nama: 'Aryan', foto: '', sizes: { S: 10, M: 22, L: 32, XL: 33, XXL: 7, XXXL: 10 }, sizeDetails: { S:{r:10,l:0}, M:{r:3,l:19}, L:{r:8,l:24}, XL:{r:6,l:27}, XXL:{r:7,l:0}, XXXL:{r:10,l:0} } },
+                    { sku: 'BPJ-005', nama: 'Jawaning', foto: '', sizes: { S: 10, M: 12, L: 37, XL: 38, XXL: 8, XXXL: 10 }, sizeDetails: { S:{r:10,l:0}, M:{r:2,l:10}, L:{r:8,l:29}, XL:{r:9,l:29}, XXL:{r:8,l:0}, XXXL:{r:10,l:0} } },
+                    { sku: 'BPJ-006', nama: 'Dewat', foto: '', sizes: { S: 32, M: 52, L: 84, XL: 80, XXL: 30, XXXL: 35 }, sizeDetails: { S:{r:7,l:25}, M:{r:6,l:46}, L:{r:14,l:70}, XL:{r:8,l:72}, XXL:{r:7,l:23}, XXXL:{r:9,l:26} } },
+                    { sku: 'BPJ-007', nama: 'Dhikary', foto: '', sizes: { S: 7, M: 22, L: 38, XL: 33, XXL: 7, XXXL: 9 }, sizeDetails: { S:{r:7,l:0}, M:{r:4,l:18}, L:{r:5,l:33}, XL:{r:8,l:25}, XXL:{r:7,l:0}, XXXL:{r:9,l:0} } },
+                    { sku: 'BPJ-008', nama: 'Oshady', foto: '', sizes: { S: 7, M: 13, L: 13, XL: 32, XXL: 9, XXXL: 16 }, sizeDetails: { S:{r:7,l:0}, M:{r:3,l:10}, L:{r:3,l:10}, XL:{r:2,l:30}, XXL:{r:5,l:4}, XXXL:{r:10,l:6} } },
+                    { sku: 'BPJ-009', nama: 'Yudhistir Navy', foto: '', sizes: { S: 10, M: 12, L: 33, XL: 33, XXL: 11, XXXL: 16 }, sizeDetails: { S:{r:10,l:0}, M:{r:12,l:0}, L:{r:3,l:30}, XL:{r:3,l:30}, XXL:{r:1,l:10}, XXXL:{r:6,l:10} } },
+                    { sku: 'BPJ-010', nama: 'Arkatama Brown', foto: '', sizes: { S: 9, M: 7, L: 32, XL: 34, XXL: 16, XXXL: 16 }, sizeDetails: { S:{r:8,l:1}, M:{r:5,l:2}, L:{r:8,l:24}, XL:{r:10,l:24}, XXL:{r:8,l:8}, XXXL:{r:4,l:12} } },
+                    { sku: 'BPJ-011', nama: 'Adhikary', foto: '', sizes: { S: 10, M: 12, L: 44, XL: 36, XXL: 7, XXXL: 10 }, sizeDetails: { S:{r:10,l:0}, M:{r:2,l:10}, L:{r:15,l:29}, XL:{r:9,l:27}, XXL:{r:7,l:0}, XXXL:{r:10,l:0} } },
+                    { sku: 'BPJ-012', nama: 'Thevana', foto: '', sizes: { S: 30, M: 0, L: 29, XL: 61, XXL: 0, XXXL: 24 }, sizeDetails: { S:{r:12,l:18}, M:{r:0,l:0}, L:{r:17,l:12}, XL:{r:41,l:20}, XXL:{r:0,l:0}, XXXL:{r:14,l:10} } }
                 ];
             }
 
@@ -733,7 +742,7 @@ function doPost(e) {
         }
 
         function saveData() {
-            localStorage.setItem('wms_bpj_state_v3', JSON.stringify(state));
+            localStorage.setItem('wms_bpj_state_v5', JSON.stringify(state));
         }
 
         function updateSyncIndicator() {
@@ -749,9 +758,7 @@ function doPost(e) {
             }
         }
 
-        function openGasSetup() {
-            openModal('modal-gas-setup');
-        }
+        function openGasSetup() { openModal('modal-gas-setup'); }
 
         function copyGasScript() {
             const ta = document.getElementById('gas-script-code');
@@ -787,12 +794,11 @@ function doPost(e) {
                 
             } catch(e) {
                 showToast("Gagal terhubung ke Cloud Sheet!", "error");
-                console.error(e);
             }
             hideLoading();
         }
 
-        async function pushToGAS(actionName, detailText, transEntry = null) {
+        async function pushToGAS(actionName, detailText, transEntries = null) {
             if(!GAS_URL) return;
             
             const logEntry = {
@@ -809,8 +815,8 @@ function doPost(e) {
                 newLogs: [logEntry]
             };
             
-            if(transEntry) {
-                payload.newTrans = [transEntry];
+            if(transEntries) {
+                payload.newTrans = Array.isArray(transEntries) ? transEntries : [transEntries];
             }
 
             try {
@@ -818,7 +824,7 @@ function doPost(e) {
                     method: 'POST',
                     body: JSON.stringify(payload)
                 });
-            } catch(e) { console.error("Push Error", e); }
+            } catch(e) {}
         }
 
         async function uploadPhotoToDrive(base64Data, filename) {
@@ -835,7 +841,7 @@ function doPost(e) {
                 });
                 const data = await response.json();
                 if(data.url) return data.url;
-            } catch(e) { console.error("Upload Error", e); }
+            } catch(e) {}
             return base64Data;
         }
 
@@ -864,11 +870,9 @@ function doPost(e) {
                         showToast('Nama Pengguna atau PIN salah!', 'error');
                     }
                 } else {
-                    throw new Error("Data login kosong atau tidak valid di spreadsheet.");
+                    throw new Error("Data login kosong");
                 }
             } catch (error) {
-                console.warn("Koneksi cloud gagal atau bermasalah, beralih ke login offline fallback...", error);
-                
                 if (nama === 'ADMIN' && pin === '123456') {
                     state.user = { nama: 'Administrator', role: 'ADMIN' };
                     showToast('Masuk menggunakan akun lokal (Offline)', 'success');
@@ -920,15 +924,11 @@ function doPost(e) {
             if (state.user.role === 'ADMIN') {
                 if (quickAddBtn) quickAddBtn.style.display = 'flex';
                 if (quickEditBtn) quickEditBtn.style.display = 'flex';
-                if (qaContainer) {
-                    qaContainer.className = "grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4";
-                }
+                if (qaContainer) qaContainer.className = "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4";
             } else {
                 if (quickAddBtn) quickAddBtn.style.display = 'none';
                 if (quickEditBtn) quickEditBtn.style.display = 'none';
-                if (qaContainer) {
-                    qaContainer.className = "grid grid-cols-2 gap-3 sm:gap-4";
-                }
+                if (qaContainer) qaContainer.className = "grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4";
             }
 
             switchTab('dashboard'); 
@@ -973,9 +973,7 @@ function doPost(e) {
             const content = document.getElementById(`${modalId}-content`);
             modal.classList.add('opacity-0');
             if(content) content.classList.add('scale-95');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-            }, 300); 
+            setTimeout(() => { modal.classList.add('hidden'); }, 300); 
         }
 
         function showToast(msg, type = 'success') {
@@ -1007,7 +1005,121 @@ function doPost(e) {
             document.getElementById('dash-keluar-hari-ini').innerText = outToday.toLocaleString('id-ID');
         }
 
-        // ====== SYSTEM REKAP STOK: PREMIUM CARD-GRID LAYOUT ======
+        // ================= SISTEM PARSING TEKS CATATAN MANUAL =================
+        function parseStockText(text) {
+            const lines = text.split('\n');
+            let currentProduct = null;
+            const parsedData = {};
+
+            const productRegex = /^\d+\.\s+(.+)$/i;
+            const sizeRegex = /^(S|M|L|XL|XXL|XXXL|3XL)\s*=\s*([-\d]+)\s*(?:<\s*(\d+)\s*>)?\s*$/i;
+
+            lines.forEach(line => {
+                line = line.trim();
+                if (!line) return;
+
+                const prodMatch = line.match(productRegex);
+                if (prodMatch) {
+                    currentProduct = prodMatch[1].trim().toLowerCase();
+                    parsedData[currentProduct] = {};
+                } else if (currentProduct) {
+                    const sizeMatch = line.match(sizeRegex);
+                    if (sizeMatch) {
+                        let sizeName = sizeMatch[1].toUpperCase();
+                        if (sizeName === '3XL') sizeName = 'XXXL';
+                        
+                        let rakVal = sizeMatch[2];
+                        let rak = (rakVal === '-' || rakVal === '') ? 0 : parseInt(rakVal);
+                        if (isNaN(rak)) rak = 0;
+                        
+                        let luar = sizeMatch[3] ? parseInt(sizeMatch[3]) : 0;
+                        
+                        parsedData[currentProduct][sizeName] = { r: rak, l: luar };
+                    }
+                }
+            });
+            return parsedData;
+        }
+
+        function processTextUpdate(e) {
+            e.preventDefault();
+            const text = document.getElementById('text-update-input').value;
+            const parsedData = parseStockText(text);
+            
+            if (Object.keys(parsedData).length === 0) {
+                showToast('Format teks tidak dikenali atau kosong', 'error');
+                return;
+            }
+
+            let updatedCount = 0;
+            let transactionsToAdd = [];
+            let logDetails = [];
+
+            state.products.forEach(p => {
+                const pName = p.nama.toLowerCase();
+                // Mencari kecocokan nama produk secara fuzzy
+                let matchedKey = Object.keys(parsedData).find(k => pName === k || pName.includes(k) || k.includes(pName));
+                
+                if (matchedKey) {
+                    const newData = parsedData[matchedKey];
+                    let hasChange = false;
+
+                    // Inisialisasi sizeDetail jika belum ada
+                    if(!p.sizeDetails) {
+                        p.sizeDetails = {
+                            S:{r:p.sizes.S, l:0}, M:{r:p.sizes.M, l:0}, L:{r:p.sizes.L, l:0}, 
+                            XL:{r:p.sizes.XL, l:0}, XXL:{r:p.sizes.XXL, l:0}, XXXL:{r:p.sizes.XXXL, l:0}
+                        };
+                    }
+
+                    ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'].forEach(size => {
+                        if (newData[size] !== undefined) {
+                            const oldTotal = p.sizes[size];
+                            const newTotal = newData[size].r + newData[size].l;
+                            
+                            // Hitung transaksi berdasarkan selisih Total
+                            if (newTotal !== oldTotal) {
+                                const diff = newTotal - oldTotal;
+                                const type = diff > 0 ? 'IN' : 'OUT';
+                                const qty = Math.abs(diff);
+
+                                transactionsToAdd.push({
+                                    date: new Date().toISOString(),
+                                    type: type, sku: p.sku, size: size, qty: qty,
+                                    user: state.user.nama
+                                });
+                                hasChange = true;
+                            }
+                            
+                            // Terapkan pembaruan nilai final
+                            p.sizes[size] = newTotal;
+                            p.sizeDetails[size] = { r: newData[size].r, l: newData[size].l };
+                        }
+                    });
+
+                    if (hasChange) {
+                        updatedCount++;
+                        logDetails.push(p.sku);
+                    }
+                }
+            });
+
+            if (updatedCount > 0) {
+                state.transactions.unshift(...transactionsToAdd);
+                logActivity('Update via Teks', `Berhasil update ${updatedCount} produk via catatan`);
+                saveData();
+                pushToGAS('Update via Teks', `Update massal via teks untuk ${updatedCount} produk`, transactionsToAdd);
+                
+                showToast(`Berhasil sinkronisasi ${updatedCount} produk!`);
+                renderDashboard();
+                if(!document.getElementById('tab-rekap').classList.contains('hidden')) renderRekapStok();
+                closeModal('modal-text-update');
+                document.getElementById('text-update-input').value = '';
+            } else {
+                showToast('Stok sudah sinkron atau format tidak cocok', 'error');
+            }
+        }
+
         function renderRekapStok() {
             const container = document.getElementById('rekap-grid-container');
             const search = document.getElementById('search-rekap').value.toLowerCase();
@@ -1022,20 +1134,39 @@ function doPost(e) {
 
             filtered.forEach(p => {
                 const total = Object.values(p.sizes).reduce((a, b) => a + b, 0);
-                
-                // --- PERBAIKAN LOGIKA RENDER GAMBAR ---
                 let displayImgSrc = getDisplayImageUrl(p.foto);
-                if (!displayImgSrc) {
-                    displayImgSrc = FALLBACK_IMG;
-                }
+                if (!displayImgSrc) displayImgSrc = FALLBACK_IMG;
+
+                let sizeCards = '';
+                ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'].forEach(sz => {
+                    let totalSz = p.sizes[sz];
+                    let r = p.sizeDetails && p.sizeDetails[sz] ? p.sizeDetails[sz].r : totalSz;
+                    let l = p.sizeDetails && p.sizeDetails[sz] ? p.sizeDetails[sz].l : 0;
+                    
+                    let label = sz === 'XXXL' ? '3XL' : sz;
+                    let totalDisplay = totalSz === 0 ? `<span class="text-slate-600">0</span>` : `<span class="text-white">${totalSz}</span>`;
+                    
+                    let breakdownDisplay = `
+                        <div class="flex justify-between items-center gap-1.5 text-[9px] mt-1.5 w-full bg-slate-900/60 rounded py-0.5 px-1.5 font-mono shadow-inner border border-slate-700/50">
+                            <span class="${r > 0 ? 'text-emerald-400 font-bold' : 'text-slate-600'}" title="Stok di Rak">R:${r}</span>
+                            <span class="${l > 0 ? 'text-amber-400 font-bold' : 'text-slate-600'}" title="Stok Luar Rak">L:${l}</span>
+                        </div>
+                    `;
+
+                    sizeCards += `
+                        <div class="bg-slate-800/20 p-2 rounded-xl border border-slate-800/60 flex flex-col justify-center items-center min-h-[60px]">
+                            <span class="text-slate-400 font-extrabold block text-[10px] mb-1">${label}</span>
+                            <span class="font-mono font-bold block leading-none text-center text-[14px]">${totalDisplay}</span>
+                            ${breakdownDisplay}
+                        </div>
+                    `;
+                });
 
                 const card = document.createElement('div');
                 card.className = 'glass-card p-5 rounded-3xl flex flex-col gap-4 border border-slate-800/80 hover:border-slate-700/60 hover:shadow-2xl hover:shadow-amber-500/5 transition-all duration-300 fade-in';
-                
                 const safeNama = p.nama.replace(/'/g, "\\'");
 
                 card.innerHTML = `
-                    <!-- Bagian Atas: Gambar, Informasi Utama, & Badge Total -->
                     <div class="flex items-center gap-4">
                         <div class="relative group shrink-0">
                             <img src="${displayImgSrc}" onerror="this.onerror=null; this.src='${ERROR_IMG}';" class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover cursor-pointer border border-slate-700 group-hover:border-amber-500 group-hover:scale-[1.03] transition-all duration-300 shadow-lg bg-slate-800" onclick="viewImage('${displayImgSrc}', '${safeNama}')">
@@ -1048,40 +1179,16 @@ function doPost(e) {
                             <p class="text-xs font-semibold text-amber-500/90 font-mono tracking-wider mt-1 bg-slate-900/50 py-1 px-2.5 rounded-lg inline-block border border-slate-800">${p.sku}</p>
                         </div>
                         <div class="text-right pl-2">
-                            <span class="text-[9px] text-slate-400 font-bold block uppercase tracking-widest mb-0.5">Stok</span>
+                            <span class="text-[9px] text-slate-400 font-bold block uppercase tracking-widest mb-0.5">Total</span>
                             <span class="text-2xl sm:text-3xl font-extrabold text-amber-500 tracking-tight">${total}</span>
                             <span class="text-[10px] text-slate-500 block">Pcs</span>
                         </div>
                     </div>
                     
-                    <!-- Bagian Bawah: Grid Ukuran (S - XXXL) -->
                     <div class="bg-slate-900/50 p-3.5 rounded-2xl border border-slate-800/80">
-                        <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider block mb-2"><i class="fas fa-arrows-left-right text-[8px] text-slate-500"></i> Rincian Ukuran</span>
+                        <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider block mb-2"><i class="fas fa-arrows-left-right text-[8px] text-slate-500"></i> Total per Ukuran & Rincian Stok</span>
                         <div class="grid grid-cols-6 gap-1.5 sm:gap-2 text-center text-xs">
-                            <div class="bg-slate-800/20 p-2 rounded-xl border border-slate-800/60">
-                                <span class="text-slate-500 font-extrabold block text-[9px]">S</span>
-                                <span class="text-white font-mono font-bold mt-1 block ${p.sizes.S === 0 ? 'text-slate-600' : ''}">${p.sizes.S}</span>
-                            </div>
-                            <div class="bg-slate-800/20 p-2 rounded-xl border border-slate-800/60">
-                                <span class="text-slate-500 font-extrabold block text-[9px]">M</span>
-                                <span class="text-white font-mono font-bold mt-1 block ${p.sizes.M === 0 ? 'text-slate-600' : ''}">${p.sizes.M}</span>
-                            </div>
-                            <div class="bg-slate-800/20 p-2 rounded-xl border border-slate-800/60">
-                                <span class="text-slate-500 font-extrabold block text-[9px]">L</span>
-                                <span class="text-white font-mono font-bold mt-1 block ${p.sizes.L === 0 ? 'text-slate-600' : ''}">${p.sizes.L}</span>
-                            </div>
-                            <div class="bg-slate-800/20 p-2 rounded-xl border border-slate-800/60">
-                                <span class="text-slate-500 font-extrabold block text-[9px]">XL</span>
-                                <span class="text-white font-mono font-bold mt-1 block ${p.sizes.XL === 0 ? 'text-slate-600' : ''}">${p.sizes.XL}</span>
-                            </div>
-                            <div class="bg-slate-800/20 p-2 rounded-xl border border-slate-800/60">
-                                <span class="text-slate-500 font-extrabold block text-[9px]">XXL</span>
-                                <span class="text-white font-mono font-bold mt-1 block ${p.sizes.XXL === 0 ? 'text-slate-600' : ''}">${p.sizes.XXL}</span>
-                            </div>
-                            <div class="bg-slate-800/20 p-2 rounded-xl border border-slate-800/60">
-                                <span class="text-slate-500 font-extrabold block text-[9px]">3XL</span>
-                                <span class="text-white font-mono font-bold mt-1 block ${p.sizes.XXXL === 0 ? 'text-slate-600' : ''}">${p.sizes.XXXL}</span>
-                            </div>
+                            ${sizeCards}
                         </div>
                     </div>
                 `;
@@ -1118,14 +1225,32 @@ function doPost(e) {
 
             const product = state.products[productIndex];
 
+            // Setup default size detail if none
+            if(!product.sizeDetails) {
+                product.sizeDetails = {
+                    S:{r:product.sizes.S, l:0}, M:{r:product.sizes.M, l:0}, L:{r:product.sizes.L, l:0}, 
+                    XL:{r:product.sizes.XL, l:0}, XXL:{r:product.sizes.XXL, l:0}, XXXL:{r:product.sizes.XXXL, l:0}
+                };
+            }
+
             if (type === 'OUT') {
                 if (product.sizes[size] < qty) {
                     showToast(`Gagal: Stok ${size} tidak mencukupi! (Sisa: ${product.sizes[size]})`, 'error');
                     return;
                 }
                 product.sizes[size] -= qty;
+                
+                // Kurangi dari rak terlebih dahulu
+                if (product.sizeDetails[size].r >= qty) {
+                    product.sizeDetails[size].r -= qty;
+                } else {
+                    let remaining = qty - product.sizeDetails[size].r;
+                    product.sizeDetails[size].r = 0;
+                    product.sizeDetails[size].l -= remaining;
+                }
             } else {
                 product.sizes[size] += qty;
+                product.sizeDetails[size].r += qty;
             }
 
             const transEntry = {
@@ -1137,8 +1262,6 @@ function doPost(e) {
             state.transactions.unshift(transEntry);
 
             const actionLabel = type === 'IN' ? 'Restok Masuk' : 'Stok Keluar';
-            
-            // PERBAIKAN: Menghindari penggunaan simbol + / - di awal kalimat agar Google Sheets tidak menganggapnya sebagai rumus
             const detailLabel = type === 'IN' 
                 ? `Penambahan stok sejumlah ${qty} pcs untuk SKU ${sku} (Ukuran ${size})` 
                 : `Pengurangan stok sejumlah ${qty} pcs untuk SKU ${sku} (Ukuran ${size})`;
@@ -1214,16 +1337,14 @@ function doPost(e) {
                 finalPhotoUrl = await uploadPhotoToDrive(base64ImageTemp, sku + "_" + Date.now() + ext);
             }
 
+            const s=parseInt(document.getElementById('add-s').value)||0, m=parseInt(document.getElementById('add-m').value)||0;
+            const l=parseInt(document.getElementById('add-l').value)||0, xl=parseInt(document.getElementById('add-xl').value)||0;
+            const xxl=parseInt(document.getElementById('add-xxl').value)||0, xxxl=parseInt(document.getElementById('add-xxxl').value)||0;
+
             const newProd = {
                 sku: sku, nama: nama, foto: finalPhotoUrl,
-                sizes: {
-                    S: parseInt(document.getElementById('add-s').value) || 0,
-                    M: parseInt(document.getElementById('add-m').value) || 0,
-                    L: parseInt(document.getElementById('add-l').value) || 0,
-                    XL: parseInt(document.getElementById('add-xl').value) || 0,
-                    XXL: parseInt(document.getElementById('add-xxl').value) || 0,
-                    XXXL: parseInt(document.getElementById('add-xxxl').value) || 0
-                }
+                sizes: { S: s, M: m, L: l, XL: xl, XXL: xxl, XXXL: xxxl },
+                sizeDetails: { S:{r:s, l:0}, M:{r:m, l:0}, L:{r:l, l:0}, XL:{r:xl, l:0}, XXL:{r:xxl, l:0}, XXXL:{r:xxxl, l:0} }
             };
 
             state.products.push(newProd);
@@ -1241,7 +1362,6 @@ function doPost(e) {
             renderDashboard();
         }
 
-        // --- SISTEM EDIT & HAPUS PRODUK (ADMIN ONLY) ---
         let selectedProductForEdit = null;
 
         function handleSelectProductToEdit(e) {
@@ -1250,9 +1370,7 @@ function doPost(e) {
             if(!sku) return;
             
             closeModal('modal-select-edit');
-            setTimeout(() => {
-                openEditProductModal(sku);
-            }, 350);
+            setTimeout(() => { openEditProductModal(sku); }, 350);
         }
 
         function openEditProductModal(sku) {
@@ -1282,7 +1400,6 @@ function doPost(e) {
             }
 
             document.getElementById('edit-foto').value = ''; 
-
             openModal('modal-edit-product');
         }
 
@@ -1308,12 +1425,17 @@ function doPost(e) {
             selectedProductForEdit.sku = newSku;
             selectedProductForEdit.nama = newNama;
             selectedProductForEdit.foto = finalPhotoUrl;
-            selectedProductForEdit.sizes.S = parseInt(document.getElementById('edit-s').value) || 0;
-            selectedProductForEdit.sizes.M = parseInt(document.getElementById('edit-m').value) || 0;
-            selectedProductForEdit.sizes.L = parseInt(document.getElementById('edit-l').value) || 0;
-            selectedProductForEdit.sizes.XL = parseInt(document.getElementById('edit-xl').value) || 0;
-            selectedProductForEdit.sizes.XXL = parseInt(document.getElementById('edit-xxl').value) || 0;
-            selectedProductForEdit.sizes.XXXL = parseInt(document.getElementById('edit-xxxl').value) || 0;
+            
+            if(!selectedProductForEdit.sizeDetails) selectedProductForEdit.sizeDetails = {};
+
+            ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'].forEach(sz => {
+                const newVal = parseInt(document.getElementById(`edit-${sz.toLowerCase()}`).value) || 0;
+                if (selectedProductForEdit.sizes[sz] !== newVal) {
+                    selectedProductForEdit.sizes[sz] = newVal;
+                    // Reset rak configuration manually on edit overwrite
+                    selectedProductForEdit.sizeDetails[sz] = { r: newVal, l: 0 }; 
+                }
+            });
 
             logActivity('Edit Produk', `SKU ${oldSku} disesuaikan ke SKU ${newSku} (${newNama})`);
             saveData();
@@ -1324,7 +1446,7 @@ function doPost(e) {
             closeModal('modal-edit-product');
             showToast('Detail produk berhasil diperbarui');
             renderDashboard();
-            renderRekapStok();
+            if(!document.getElementById('tab-rekap').classList.contains('hidden')) renderRekapStok();
         }
 
         function openDeleteConfirmModal() {
@@ -1360,7 +1482,7 @@ function doPost(e) {
             closeModal('modal-edit-product');
             showToast('Produk berhasil dihapus permanen');
             renderDashboard();
-            renderRekapStok();
+            if(!document.getElementById('tab-rekap').classList.contains('hidden')) renderRekapStok();
         }
 
         function logActivity(action, detail) {
