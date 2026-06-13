@@ -85,10 +85,8 @@
         </div>
     </div>
 
-    <!-- ================= MAIN APP (HIDDEN BY DEFAULT) ================= -->
+    <!-- ================= MAIN APP ================= -->
     <div id="main-app" class="hidden min-h-screen flex-col pb-20 md:pb-0">
-        
-        <!-- Header -->
         <header class="glass-card sticky top-0 z-40 border-b-0 border-slate-800">
             <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
                 <div class="flex items-center gap-3">
@@ -107,13 +105,15 @@
                         <p id="user-display-name" class="text-sm font-bold text-white leading-tight">-</p>
                         <p id="user-display-role" class="text-[10px] text-amber-400 font-mono uppercase">-</p>
                     </div>
+                    <button onclick="openGasSetup()" class="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 text-cyan-400 hover:text-cyan-300 hover:bg-slate-700 transition-all flex items-center justify-center mr-1" title="GAS Settings">
+                        <i class="fas fa-database"></i>
+                    </button>
                     <button onclick="handleLogout()" class="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 text-slate-400 hover:text-rose-400 hover:bg-slate-700 transition-all flex items-center justify-center">
                         <i class="fas fa-power-off"></i>
                     </button>
                 </div>
             </div>
 
-            <!-- Scrollable Navigation Tabs -->
             <div class="max-w-5xl mx-auto px-4 overflow-x-auto hide-scrollbar border-t border-slate-800 flex gap-6 text-sm">
                 <button onclick="switchTab('dashboard')" id="tab-btn-dashboard" class="whitespace-nowrap py-3 tab-active transition-all"><i class="fas fa-home mr-1.5"></i> Dashboard</button>
                 <button onclick="switchTab('rekap')" id="tab-btn-rekap" class="whitespace-nowrap py-3 tab-inactive transition-all"><i class="fas fa-boxes-stacked mr-1.5"></i> Rekap Stok</button>
@@ -124,10 +124,8 @@
 
         <!-- Main Content Area -->
         <main class="flex-1 max-w-5xl mx-auto w-full p-4 sm:p-6 space-y-6">
-            
             <!-- ====== TAB: DASHBOARD ====== -->
             <div id="tab-dashboard" class="fade-in space-y-6">
-                
                 <!-- Summary Cards Grid -->
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                     <div class="glass-card p-4 rounded-2xl">
@@ -161,6 +159,40 @@
                         </div>
                         <h3 id="dash-keluar-hari-ini" class="text-2xl sm:text-3xl font-bold text-white">0</h3>
                         <p class="text-[10px] text-rose-500/70 mt-1">Pengurangan Stok</p>
+                    </div>
+                </div>
+
+                <!-- Category Summary Cards Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    <div class="glass-card p-4 rounded-2xl border-l-4 border-amber-500 bg-gradient-to-r from-amber-500/5 to-transparent">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-bold text-amber-500 uppercase tracking-wider"><i class="fas fa-scroll mr-1.5"></i> Kategori: KATUN</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 mt-1">
+                            <div>
+                                <p class="text-[10px] text-slate-400 font-semibold uppercase">Kartu SKU</p>
+                                <h4 id="dash-katun-sku" class="text-xl font-bold text-white">0</h4>
+                            </div>
+                            <div>
+                                <p class="text-[10px] text-slate-400 font-semibold uppercase">Total Stok</p>
+                                <h4 id="dash-katun-stok" class="text-xl font-bold text-white">0 <span class="text-xs text-slate-500 font-normal">Pcs</span></h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-card p-4 rounded-2xl border-l-4 border-cyan-500 bg-gradient-to-r from-cyan-500/5 to-transparent">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider"><i class="fas fa-layer-group mr-1.5"></i> Kategori: POLI</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 mt-1">
+                            <div>
+                                <p class="text-[10px] text-slate-400 font-semibold uppercase">Kartu SKU</p>
+                                <h4 id="dash-poli-sku" class="text-xl font-bold text-white">0</h4>
+                            </div>
+                            <div>
+                                <p class="text-[10px] text-slate-400 font-semibold uppercase">Total Stok</p>
+                                <h4 id="dash-poli-stok" class="text-xl font-bold text-white">0 <span class="text-xs text-slate-500 font-normal">Pcs</span></h4>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -215,7 +247,7 @@
                     </div>
                 </div>
                 
-                <div id="rekap-grid-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div id="rekap-grid-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 pb-12">
                     <!-- Data populated dynamically by JS -->
                 </div>
             </div>
@@ -253,13 +285,11 @@
                     <!-- Data populated by JS -->
                 </div>
             </div>
-
         </main>
     </div>
 
     <!-- ================= MODALS ================= -->
-
-    <!-- Modal: Catatan Manual (Update Stok via Teks) -->
+    <!-- Modal: Catatan Manual -->
     <div id="modal-text-update" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay hidden opacity-0 transition-opacity">
         <div class="glass-card w-full max-w-lg rounded-3xl p-6 transform scale-95 transition-transform max-h-[90vh] flex flex-col" id="modal-text-update-content">
             <div class="flex justify-between items-center mb-5 shrink-0">
@@ -269,12 +299,19 @@
             <p class="text-xs text-slate-400 mb-3 shrink-0">
                 Tempel catatan manual di sini untuk menyesuaikan stok sekaligus. <br>
                 <span class="text-amber-400 font-semibold block mt-1 bg-amber-500/10 p-2 rounded-lg border border-amber-500/20">
-                    <i class="fas fa-info-circle"></i> Jika Anda memasukkan lebih dari 1 catatan di hari yang sama, sistem otomatis akan <b>menimpa (overwrite)</b> data sebelumnya dan memastikan stok aplikasi persis sesuai dengan catatan terakhir Anda.
+                    <i class="fas fa-info-circle"></i> Sistem otomatis akan menimpa (overwrite) data sebelumnya dan menyesuaikan stok dengan data terakhir Anda berdasarkan kategori yang dipilih.
                 </span>
-                <span class="block mt-2">Format: <b>1. Nama Produk</b> (baris baru) <b>S= 19 &lt;30&gt;</b> (30 = stok di luar rak).</span>
             </p>
-            <form onsubmit="processTextUpdate(event)" class="flex-1 flex flex-col min-h-[300px]">
-                <textarea id="text-update-input" required class="flex-1 w-full bg-slate-900 border border-slate-700 rounded-xl p-4 text-sm text-white focus:outline-none focus:border-purple-500 font-mono resize-none hide-scrollbar mb-4" placeholder="Contoh:&#10;&#10;1. Afandra&#10;S= 19 <30>&#10;M= 15 <50>&#10;L= 12 <74>&#10;..."></textarea>
+            <form onsubmit="processTextUpdate(event)" class="flex-1 flex flex-col min-h-[350px]">
+                <!-- Pilihan Kategori untuk Filter Update -->
+                <div class="mb-4 shrink-0">
+                    <label class="block text-xs font-semibold text-slate-400 mb-1.5">Kategori Produk yang Akan Diperbarui</label>
+                    <select id="text-update-kategori" required class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2.5 px-3 text-sm text-white focus:outline-none focus:border-purple-500">
+                        <option value="KATUN" selected>KATUN</option>
+                        <option value="POLI">POLI</option>
+                    </select>
+                </div>
+                <textarea id="text-update-input" required class="flex-1 w-full bg-slate-900 border border-slate-700 rounded-xl p-4 text-sm text-white focus:outline-none focus:border-purple-500 font-mono resize-none hide-scrollbar mb-4" placeholder="Contoh:&#10;&#10;1. Afandra&#10;S= 19 <30>&#10;M= 15 <50>&#10;..."></textarea>
                 <button type="submit" class="w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-purple-500/20 shrink-0 flex items-center justify-center gap-2">
                     <i class="fas fa-magic"></i> Sinkronisasi ke Catatan Terakhir
                 </button>
@@ -379,6 +416,14 @@
                 </div>
 
                 <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Kategori Bahan</label>
+                    <select id="add-kategori" required class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2.5 px-3 text-sm text-white focus:outline-none focus:border-amber-500">
+                        <option value="POLI">POLI</option>
+                        <option value="KATUN" selected>KATUN</option>
+                    </select>
+                </div>
+
+                <div>
                     <label class="block text-xs font-semibold text-slate-400 mb-1">Upload Foto Produk</label>
                     <div class="flex items-center gap-3">
                         <div id="img-preview-box" class="w-16 h-16 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center overflow-hidden shrink-0">
@@ -427,6 +472,14 @@
                 </div>
 
                 <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Kategori Bahan</label>
+                    <select id="edit-kategori" required class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2.5 px-3 text-sm text-white focus:outline-none focus:border-amber-500">
+                        <option value="POLI">POLI</option>
+                        <option value="KATUN">KATUN</option>
+                    </select>
+                </div>
+
+                <div>
                     <label class="block text-xs font-semibold text-slate-400 mb-1">Upload / Perbarui Foto Produk</label>
                     <div class="flex items-center gap-3">
                         <div id="edit-img-preview-box" class="w-16 h-16 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center overflow-hidden shrink-0">
@@ -460,7 +513,7 @@
         </div>
     </div>
 
-    <!-- Modal: Konfirmasi Hapus Produk (Sistem PIN) -->
+    <!-- Modal: Konfirmasi Hapus Produk -->
     <div id="modal-confirm-delete" class="fixed inset-0 z-[130] flex items-center justify-center p-4 modal-overlay hidden opacity-0 transition-opacity">
         <div class="glass-card w-full max-w-sm rounded-3xl p-6 transform scale-95 transition-transform" id="modal-confirm-delete-content">
             <div class="text-center mb-6">
@@ -484,16 +537,56 @@
         </div>
     </div>
 
+    <!-- Modal: Autentikasi Pengaturan GAS -->
+    <div id="modal-gas-auth" class="fixed inset-0 z-[125] flex items-center justify-center p-4 modal-overlay hidden opacity-0 transition-opacity">
+        <div class="glass-card w-full max-w-sm rounded-3xl p-6 transform scale-95 transition-transform" id="modal-gas-auth-content">
+            <div class="text-center mb-5">
+                <div class="w-12 h-12 bg-cyan-500/20 text-cyan-400 rounded-full flex items-center justify-center mx-auto mb-3 text-xl">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h3 class="text-base font-bold text-white">Buka Pengaturan GAS</h3>
+                <p class="text-xs text-slate-400 mt-2">Masukkan password sistem admin untuk membuka akses integrasi cloud</p>
+            </div>
+            
+            <form onsubmit="handleGasAuth(event)" class="space-y-4">
+                <div>
+                    <input type="password" id="gas-pass-input" required class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2.5 px-3 text-center text-sm text-white focus:outline-none focus:border-cyan-500 tracking-widest text-center" placeholder="••••••••">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <button type="button" onclick="closeModal('modal-gas-auth')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold py-2.5 rounded-xl text-xs transition-all">Batal</button>
+                    <button type="submit" class="bg-cyan-500 hover:bg-cyan-600 text-slate-900 font-bold py-2.5 rounded-xl text-xs transition-all">Verifikasi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Generic Confirmation -->
+    <div id="modal-generic-confirm" class="fixed inset-0 z-[130] flex items-center justify-center p-4 modal-overlay hidden opacity-0 transition-opacity">
+        <div class="glass-card w-full max-w-sm rounded-3xl p-6 transform scale-95 transition-transform" id="modal-generic-confirm-content">
+            <div class="text-center mb-6">
+                <div id="generic-confirm-icon" class="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 text-xl">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h3 id="generic-confirm-title" class="text-base font-bold text-white">Konfirmasi Tindakan</h3>
+                <p id="generic-confirm-text" class="text-xs text-slate-400 mt-2"></p>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <button type="button" onclick="closeModal('modal-generic-confirm')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold py-2.5 rounded-xl text-xs transition-all">Batal</button>
+                <button type="button" id="generic-confirm-btn" class="bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold py-2.5 rounded-xl text-xs transition-all">Lanjutkan</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal: Image Lightbox -->
     <div id="modal-lightbox" class="fixed inset-0 z-[110] flex items-center justify-center p-4 modal-overlay hidden opacity-0 transition-opacity" onclick="closeModal('modal-lightbox')">
-        <div class="relative max-w-lg w-full transform scale-95 transition-transform" id="modal-lightbox-content">
+        <div class="relative max-w-lg w-full transform scale-95 transition-transform" id="modal-lightbox-content" onclick="event.stopPropagation()">
             <button onclick="closeModal('modal-lightbox')" class="absolute -top-10 right-0 text-white text-3xl hover:text-amber-500"><i class="fas fa-times"></i></button>
             <img id="lightbox-img" src="" alt="Preview Produk" class="w-full h-auto rounded-2xl shadow-2xl object-contain border border-slate-700 bg-slate-900">
             <p id="lightbox-title" class="text-center mt-3 text-white font-semibold"></p>
         </div>
     </div>
 
-    <!-- Modal: Setup Google Sheets (Back-end) -->
+    <!-- Modal: Setup Google Sheets -->
     <div id="modal-gas-setup" class="fixed inset-0 z-[120] flex items-center justify-center p-4 modal-overlay hidden opacity-0 transition-opacity">
         <div class="glass-card w-full max-w-2xl rounded-3xl p-6 transform scale-95 transition-transform max-h-[90vh] overflow-y-auto hide-scrollbar" id="modal-gas-setup-content">
             <div class="flex justify-between items-center mb-5 sticky top-0 bg-slate-800/90 backdrop-blur py-2 -mt-2 -mx-2 px-2 rounded-lg z-10">
@@ -506,9 +599,8 @@
                     <p class="text-rose-400 font-bold mb-2"><i class="fas fa-exclamation-triangle"></i> PENTING (UPDATE SCRIPT):</p>
                     <ol class="list-decimal list-inside space-y-2">
                         <li>Buka <a href="https://script.google.com/" target="_blank" class="text-blue-400 underline font-bold">Google Apps Script</a>.</li>
-                        <li>Salin kode di bawah ini, dan <b>timpa semua (replace)</b> kode lama Anda. (Update kolom SizeDetail)</li>
+                        <li>Salin kode di bawah ini, dan timpa semua kode lama Anda.</li>
                         <li>Klik <b>Deploy > New Deployment</b>.</li>
-                        <li>Pastikan akses diatur ke: <b>Anyone</b>. Perbarui URL Web App di bawah jika berubah.</li>
                     </ol>
                 </div>
 
@@ -523,6 +615,22 @@
                 <button onclick="pullFromGAS()" class="w-full bg-cyan-500 hover:bg-cyan-600 text-slate-900 font-bold py-3 rounded-xl transition-all flex justify-center items-center gap-2">
                     <i class="fas fa-sync"></i> Sinkronisasi & Tarik Data Cloud
                 </button>
+
+                <!-- ALAT PEMULIHAN / RESET DATABASE -->
+                <div class="border-t border-slate-700 pt-4 mt-4">
+                    <h4 class="text-xs font-bold text-amber-500 uppercase tracking-wider mb-2"><i class="fas fa-tools"></i> Alat Pemulihan & Reset Database</h4>
+                    <p class="text-[11px] text-slate-400 mb-3">
+                        Gunakan tombol di bawah jika produk baru tidak muncul di layar akibat tertimpa data lama di memori Browser (Local Storage) atau Google Sheets Anda.
+                    </p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <button onclick="triggerResetLocal()" class="bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/40 text-rose-400 font-bold py-2.5 px-3 rounded-xl text-xs transition-all flex items-center justify-center gap-1.5">
+                            <i class="fas fa-undo"></i> Reset Data Lokal ke Bawaan
+                        </button>
+                        <button onclick="triggerForcePushDefault()" class="bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-400 font-bold py-2.5 px-3 rounded-xl text-xs transition-all flex items-center justify-center gap-1.5">
+                            <i class="fas fa-cloud-upload-alt"></i> Unggah Bawaan ke Cloud Sheet
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -540,6 +648,25 @@
 
         const FALLBACK_IMG = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIj48cmVjdCB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgZmlsbD0iIzMzNDE1NSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmaWxsPSIjOTRhM2I4IiBmb250LXNpemU9IjEyIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk5vIEltYWdlPC90ZXh0Pjwvc3ZnPg==";
         const ERROR_IMG = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIj48cmVjdCB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgZmlsbD0iIzMzNDE1NSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmaWxsPSIjOTRhM2I4IiBmb250LXNpemU9IjEyIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkVycm9yPC90ZXh0Pjwvc3ZnPg==";
+
+        /* --- ADDED LOADING UTILITIES TO PREVENT UNHANDLED REJECTION --- */
+        function showLoading(text) {
+            document.getElementById('loading-text').innerText = text;
+            const loader = document.getElementById('loading-overlay');
+            loader.classList.remove('hidden');
+            void loader.offsetWidth; // Force reflow
+            loader.classList.remove('opacity-0');
+            loader.classList.add('flex');
+        }
+
+        function hideLoading() {
+            const loader = document.getElementById('loading-overlay');
+            loader.classList.add('opacity-0');
+            setTimeout(() => {
+                loader.classList.add('hidden');
+                loader.classList.remove('flex');
+            }, 300);
+        }
 
         function getDisplayImageUrl(url) {
             if (!url || url.trim() === '') return '';
@@ -560,8 +687,8 @@ function setup() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   if (!ss.getSheetByName("Stok_Barang")) {
     var sheet = ss.insertSheet("Stok_Barang");
-    sheet.appendRow(["SKU", "Nama Produk", "S", "M", "L", "XL", "XXL", "XXXL", "Total", "Foto URL", "SizeDetail"]);
-    sheet.getRange("A1:K1").setFontWeight("bold").setBackground("#f3f4f6");
+    sheet.appendRow(["SKU", "Nama Produk", "S", "M", "L", "XL", "XXL", "XXXL", "Total", "Foto URL", "SizeDetail", "Kategori"]);
+    sheet.getRange("A1:L1").setFontWeight("bold").setBackground("#f3f4f6");
   }
   if (!ss.getSheetByName("Riwayat")) {
     var sheet = ss.insertSheet("Riwayat");
@@ -602,17 +729,18 @@ function doPost(e) {
     else if (action === "sync_data") {
        var sheetStok = ss.getSheetByName("Stok_Barang");
        if(sheetStok.getLastRow() > 1) {
-          sheetStok.getRange(2, 1, sheetStok.getLastRow()-1, 11).clearContent();
+          sheetStok.getRange(2, 1, sheetStok.getLastRow()-1, 12).clearContent();
        }
        var products = params.products || [];
        var rows = [];
        products.forEach(function(p) {
          var total = p.sizes.S + p.sizes.M + p.sizes.L + p.sizes.XL + p.sizes.XXL + p.sizes.XXXL;
          var sd = p.sizeDetails ? JSON.stringify(p.sizeDetails) : "{}";
-         rows.push([p.sku, p.nama, p.sizes.S, p.sizes.M, p.sizes.L, p.sizes.XL, p.sizes.XXL, p.sizes.XXXL, total, p.foto || "", sd]);
+         var kat = p.kategori || "POLI";
+         rows.push([p.sku, p.nama, p.sizes.S, p.sizes.M, p.sizes.L, p.sizes.XL, p.sizes.XXL, p.sizes.XXXL, total, p.foto || "", sd, kat]);
        });
        if(rows.length > 0) {
-         sheetStok.getRange(2, 1, rows.length, 11).setValues(rows);
+         sheetStok.getRange(2, 1, rows.length, 12).setValues(rows);
        }
 
        var sheetLog = ss.getSheetByName("Riwayat");
@@ -641,7 +769,8 @@ function doPost(e) {
             sku: data[i][0], nama: data[i][1],
             sizes: { S: Number(data[i][2])||0, M: Number(data[i][3])||0, L: Number(data[i][4])||0, XL: Number(data[i][5])||0, XXL: Number(data[i][6])||0, XXXL: Number(data[i][7])||0 },
             foto: data[i][9] || "",
-            sizeDetails: sd
+            sizeDetails: sd,
+            kategori: data[i][11] || "POLI"
           });
        }
        response.products = products;
@@ -698,51 +827,114 @@ function doPost(e) {
   return ContentService.createTextOutput(JSON.stringify(response)).setMimeType(ContentService.MimeType.JSON);
 }`;
 
-        function showLoading(text) {
-            document.getElementById('loading-text').innerText = text;
-            const loader = document.getElementById('loading-overlay');
-            loader.classList.remove('hidden');
-            void loader.offsetWidth;
-            loader.classList.remove('opacity-0');
-            loader.classList.add('flex');
-        }
-
-        function hideLoading() {
-            const loader = document.getElementById('loading-overlay');
-            loader.classList.add('opacity-0');
-            setTimeout(() => {
-                loader.classList.add('hidden');
-                loader.classList.remove('flex');
-            }, 300);
-        }
-
-        function init() {
-            document.getElementById('gas-script-code').value = GAS_SCRIPT_TEMPLATE;
-            updateSyncIndicator();
-
-            const savedState = localStorage.getItem('wms_bpj_state_v5');
-            if (savedState) {
-                state = JSON.parse(savedState);
-            } else {
-                state.products = [
-                    { sku: 'BPJ-001', nama: 'Afandra', foto: '', sizes: { S: 49, M: 65, L: 86, XL: 83, XXL: 14, XXXL: 33 }, sizeDetails: { S:{r:19,l:30}, M:{r:15,l:50}, L:{r:12,l:74}, XL:{r:9,l:74}, XXL:{r:14,l:0}, XXXL:{r:15,l:18} } },
-                    { sku: 'BPJ-002', nama: 'Yudhistir Burgundy', foto: '', sizes: { S: 8, M: 18, L: 31, XL: 29, XXL: 5, XXXL: 8 }, sizeDetails: { S:{r:8,l:0}, M:{r:8,l:10}, L:{r:1,l:30}, XL:{r:9,l:20}, XXL:{r:5,l:0}, XXXL:{r:8,l:0} } },
-                    { sku: 'BPJ-003', nama: 'Ghandy', foto: '', sizes: { S: 10, M: 25, L: 32, XL: 31, XXL: 7, XXXL: 10 }, sizeDetails: { S:{r:5,l:5}, M:{r:5,l:20}, L:{r:2,l:30}, XL:{r:11,l:20}, XXL:{r:7,l:0}, XXXL:{r:10,l:0} } },
-                    { sku: 'BPJ-004', nama: 'Aryan', foto: '', sizes: { S: 10, M: 22, L: 32, XL: 33, XXL: 7, XXXL: 10 }, sizeDetails: { S:{r:10,l:0}, M:{r:3,l:19}, L:{r:8,l:24}, XL:{r:6,l:27}, XXL:{r:7,l:0}, XXXL:{r:10,l:0} } },
-                    { sku: 'BPJ-005', nama: 'Jawaning', foto: '', sizes: { S: 10, M: 12, L: 37, XL: 38, XXL: 8, XXXL: 10 }, sizeDetails: { S:{r:10,l:0}, M:{r:2,l:10}, L:{r:8,l:29}, XL:{r:9,l:29}, XXL:{r:8,l:0}, XXXL:{r:10,l:0} } },
-                    { sku: 'BPJ-006', nama: 'Dewat', foto: '', sizes: { S: 32, M: 52, L: 84, XL: 80, XXL: 30, XXXL: 35 }, sizeDetails: { S:{r:7,l:25}, M:{r:6,l:46}, L:{r:14,l:70}, XL:{r:8,l:72}, XXL:{r:7,l:23}, XXXL:{r:9,l:26} } },
-                    { sku: 'BPJ-007', nama: 'Dhikary', foto: '', sizes: { S: 7, M: 22, L: 38, XL: 33, XXL: 7, XXXL: 9 }, sizeDetails: { S:{r:7,l:0}, M:{r:4,l:18}, L:{r:5,l:33}, XL:{r:8,l:25}, XXL:{r:7,l:0}, XXXL:{r:9,l:0} } },
-                    { sku: 'BPJ-008', nama: 'Oshady', foto: '', sizes: { S: 7, M: 13, L: 13, XL: 32, XXL: 9, XXXL: 16 }, sizeDetails: { S:{r:7,l:0}, M:{r:3,l:10}, L:{r:3,l:10}, XL:{r:2,l:30}, XXL:{r:5,l:4}, XXXL:{r:10,l:6} } },
-                    { sku: 'BPJ-009', nama: 'Yudhistir Navy', foto: '', sizes: { S: 10, M: 12, L: 33, XL: 33, XXL: 11, XXXL: 16 }, sizeDetails: { S:{r:10,l:0}, M:{r:12,l:0}, L:{r:3,l:30}, XL:{r:3,l:30}, XXL:{r:1,l:10}, XXXL:{r:6,l:10} } },
-                    { sku: 'BPJ-010', nama: 'Arkatama Brown', foto: '', sizes: { S: 9, M: 7, L: 32, XL: 34, XXL: 16, XXXL: 16 }, sizeDetails: { S:{r:8,l:1}, M:{r:5,l:2}, L:{r:8,l:24}, XL:{r:10,l:24}, XXL:{r:8,l:8}, XXXL:{r:4,l:12} } },
-                    { sku: 'BPJ-011', nama: 'Adhikary', foto: '', sizes: { S: 10, M: 12, L: 44, XL: 36, XXL: 7, XXXL: 10 }, sizeDetails: { S:{r:10,l:0}, M:{r:2,l:10}, L:{r:15,l:29}, XL:{r:9,l:27}, XXL:{r:7,l:0}, XXXL:{r:10,l:0} } },
-                    { sku: 'BPJ-012', nama: 'Thevana', foto: '', sizes: { S: 30, M: 0, L: 29, XL: 61, XXL: 0, XXXL: 24 }, sizeDetails: { S:{r:12,l:18}, M:{r:0,l:0}, L:{r:17,l:12}, XL:{r:41,l:20}, XXL:{r:0,l:0}, XXXL:{r:14,l:10} } }
-                ];
-            }
-
-            if (state.user) {
-                showApp();
-            }
+        function getDefaultProducts() {
+            return [
+                { sku: 'BPJ-001', nama: 'Afandra', foto: '', kategori: 'POLI', sizes: { S: 49, M: 65, L: 86, XL: 83, XXL: 14, XXXL: 33 }, sizeDetails: { S:{r:19,l:30}, M:{r:15,l:50}, L:{r:12,l:74}, XL:{r:9,l:74}, XXL:{r:14,l:0}, XXXL:{r:15,l:18} } },
+                { sku: 'BPJ-002', nama: 'Yudhistir Burgundy', foto: '', kategori: 'POLI', sizes: { S: 8, M: 18, L: 31, XL: 29, XXL: 5, XXXL: 8 }, sizeDetails: { S:{r:8,l:0}, M:{r:8,l:10}, L:{r:1,l:30}, XL:{r:9,l:20}, XXL:{r:5,l:0}, XXXL:{r:8,l:0} } },
+                { sku: 'BPJ-003', nama: 'Ghandy', foto: '', kategori: 'POLI', sizes: { S: 10, M: 25, L: 32, XL: 31, XXL: 7, XXXL: 10 }, sizeDetails: { S:{r:5,l:5}, M:{r:5,l:20}, L:{r:2,l:30}, XL:{r:11,l:20}, XXL:{r:7,l:0}, XXXL:{r:10,l:0} } },
+                { sku: 'BPJ-004', nama: 'Aryan', foto: '', kategori: 'POLI', sizes: { S: 10, M: 22, L: 32, XL: 33, XXL: 7, XXXL: 10 }, sizeDetails: { S:{r:10,l:0}, M:{r:3,l:19}, L:{r:8,l:24}, XL:{r:6,l:27}, XXL:{r:7,l:0}, XXXL:{r:10,l:0} } },
+                { sku: 'BPJ-005', nama: 'Jawaning', foto: '', kategori: 'POLI', sizes: { S: 10, M: 12, L: 37, XL: 38, XXL: 8, XXXL: 10 }, sizeDetails: { S:{r:10,l:0}, M:{r:2,l:10}, L:{r:8,l:29}, XL:{r:9,l:29}, XXL:{r:8,l:0}, XXXL:{r:10,l:0} } },
+                { sku: 'BPJ-006', nama: 'Dewat', foto: '', kategori: 'POLI', sizes: { S: 32, M: 52, L: 84, XL: 80, XXL: 30, XXXL: 35 }, sizeDetails: { S:{r:7,l:25}, M:{r:6,l:46}, L:{r:14,l:70}, XL:{r:8,l:72}, XXL:{r:7,l:23}, XXXL:{r:9,l:26} } },
+                { sku: 'BPJ-007', nama: 'Dhikary', foto: '', kategori: 'POLI', sizes: { S: 7, M: 22, L: 38, XL: 33, XXL: 7, XXXL: 9 }, sizeDetails: { S:{r:7,l:0}, M:{r:4,l:18}, L:{r:5,l:33}, XL:{r:8,l:25}, XXL:{r:7,l:0}, XXXL:{r:9,l:0} } },
+                { sku: 'BPJ-008', nama: 'Oshady', foto: '', kategori: 'POLI', sizes: { S: 7, M: 13, L: 13, XL: 32, XXL: 9, XXXL: 16 }, sizeDetails: { S:{r:7,l:0}, M:{r:3,l:10}, L:{r:3,l:10}, XL:{r:2,l:30}, XXL:{r:5,l:4}, XXXL:{r:10,l:6} } },
+                { sku: 'BPJ-009', nama: 'Yudhistir Navy', foto: '', kategori: 'POLI', sizes: { S: 10, M: 12, L: 33, XL: 33, XXL: 11, XXXL: 16 }, sizeDetails: { S:{r:10,l:0}, M:{r:12,l:0}, L:{r:3,l:30}, XL:{r:3,l:30}, XXL:{r:1,l:10}, XXXL:{r:6,l:10} } },
+                { sku: 'BPJ-010', nama: 'Arkatama Brown', foto: '', kategori: 'POLI', sizes: { S: 9, M: 7, L: 32, XL: 34, XXL: 16, XXXL: 16 }, sizeDetails: { S:{r:8,l:1}, M:{r:5,l:2}, L:{r:8,l:24}, XL:{r:10,l:24}, XXL:{r:8,l:8}, XXXL:{r:4,l:12} } },
+                { sku: 'BPJ-011', nama: 'Adhikary', foto: '', kategori: 'POLI', sizes: { S: 10, M: 12, L: 44, XL: 36, XXL: 7, XXXL: 10 }, sizeDetails: { S:{r:10,l:0}, M:{r:2,l:10}, L:{r:15,l:29}, XL:{r:9,l:27}, XXL:{r:7,l:0}, XXXL:{r:10,l:0} } },
+                { sku: 'BPJ-012', nama: 'Thevana', foto: '', kategori: 'POLI', sizes: { S: 30, M: 0, L: 29, XL: 61, XXL: 0, XXXL: 24 }, sizeDetails: { S:{r:12,l:18}, M:{r:0,l:0}, L:{r:17,l:12}, XL:{r:41,l:20}, XXL:{r:0,l:0}, XXXL:{r:14,l:10} } },
+                { sku: 'BPJ-013', nama: 'Salur Merah', foto: '', kategori: 'KATUN', sizes: { S: 10, M: 15, L: 20, XL: 20, XXL: 5, XXXL: 5 }, sizeDetails: { S: { r: 10, l: 0 }, M: { r: 15, l: 0 }, L: { r: 20, l: 0 }, XL: { r: 20, l: 0 }, XXL: { r: 5, l: 0 }, XXXL: { r: 5, l: 0 } } },
+                { sku: 'BPJ-014', nama: 'Jawaningrat', foto: '', kategori: 'KATUN', sizes: { S: 12, M: 18, L: 22, XL: 22, XXL: 8, XXXL: 8 }, sizeDetails: { S: { r: 12, l: 0 }, M: { r: 18, l: 0 }, L: { r: 22, l: 0 }, XL: { r: 22, l: 0 }, XXL: { r: 8, l: 0 }, XXXL: { r: 8, l: 0 } } },
+                
+                { sku: 'BPJ-015', nama: 'Sultan', foto: '', kategori: 'KATUN', sizes: { S:14, M:20, L:24, XL:33, XXL:13, XXXL:16 }, sizeDetails: { S:{r:4,l:10}, M:{r:15,l:5}, L:{r:4,l:20}, XL:{r:5,l:28}, XXL:{r:3,l:10}, XXXL:{r:8,l:8} } },
+                { sku: 'BPJ-016', nama: 'Yudistira Burgundy', foto: '', kategori: 'KATUN', sizes: { S:14, M:47, L:67, XL:42, XXL:21, XXXL:20 }, sizeDetails: { S:{r:14,l:0}, M:{r:37,l:10}, L:{r:37,l:30}, XL:{r:22,l:20}, XXL:{r:21,l:0}, XXXL:{r:20,l:0} } },
+                { sku: 'BPJ-017', nama: 'Nayeswara Burgundy', foto: '', kategori: 'KATUN', sizes: { S:16, M:7, L:14, XL:35, XXL:8, XXXL:14 }, sizeDetails: { S:{r:6,l:10}, M:{r:7,l:0}, L:{r:4,l:10}, XL:{r:6,l:29}, XXL:{r:8,l:0}, XXXL:{r:14,l:0} } },
+                { sku: 'BPJ-018', nama: 'Alwaneras', foto: '', kategori: 'KATUN', sizes: { S:8, M:7, L:6, XL:12, XXL:9, XXXL:9 }, sizeDetails: { S:{r:2,l:6}, M:{r:3,l:4}, L:{r:3,l:3}, XL:{r:2,l:10}, XXL:{r:2,l:7}, XXXL:{r:3,l:6} } },
+                { sku: 'BPJ-019', nama: 'Kraton', foto: '', kategori: 'KATUN', sizes: { S:4, M:9, L:16, XL:18, XXL:12, XXXL:8 }, sizeDetails: { S:{r:4,l:0}, M:{r:9,l:0}, L:{r:16,l:0}, XL:{r:18,l:0}, XXL:{r:12,l:0}, XXXL:{r:8,l:0} } },
+                { sku: 'BPJ-020', nama: 'Astayudha', foto: '', kategori: 'KATUN', sizes: { S:21, M:30, L:31, XL:24, XXL:13, XXXL:10 }, sizeDetails: { S:{r:21,l:0}, M:{r:30,l:0}, L:{r:31,l:0}, XL:{r:24,l:0}, XXL:{r:13,l:0}, XXXL:{r:10,l:0} } },
+                { sku: 'BPJ-021', nama: 'Salur Hitam', foto: '', kategori: 'KATUN', sizes: { S:3, M:8, L:18, XL:18, XXL:6, XXXL:6 }, sizeDetails: { S:{r:3,l:0}, M:{r:8,l:0}, L:{r:18,l:0}, XL:{r:18,l:0}, XXL: {r:6,l:0}, XXXL:{r:6,l:0} } },
+                { sku: 'BPJ-022', nama: 'Siliwangi Grey', foto: '', kategori: 'KATUN', sizes: { S:10, M:18, L:15, XL:19, XXL:7, XXXL:7 }, sizeDetails: { S:{r:10,l:0}, M:{r:18,l:0}, L:{r:15,l:0}, XL:{r:19,l:0}, XXL:{r:7,l:0}, XXXL:{r:7,l:0} } },
+                { sku: 'BPJ-023', nama: 'Ayanaras', foto: '', kategori: 'KATUN', sizes: { S:5, M:13, L:7, XL:6, XXL:2, XXXL:2 }, sizeDetails: { S:{r:5,l:0}, M:{r:13,l:0}, L:{r:7,l:0}, XL:{r:6,l:0}, XXL:{r:2,l:0}, XXXL:{r:2,l:0} } },
+                { sku: 'BPJ-024', nama: 'Yudistira Navy', foto: '', kategori: 'KATUN', sizes: { S:7, M:15, L:24, XL:15, XXL:10, XXXL:1 }, sizeDetails: { S:{r:7,l:0}, M:{r:15,l:0}, L:{r:24,l:0}, XL:{r:15,l:0}, XXL:{r:10,l:0}, XXXL:{r:1,l:0} } },
+                { sku: 'BPJ-025', nama: 'Dewata', foto: '', kategori: 'KATUN', sizes: { S:3, M:3, L:12, XL:1, XXL:1, XXXL:3 }, sizeDetails: { S:{r:3,l:0}, M:{r:3,l:0}, L:{r:12,l:0}, XL:{r:1,l:0}, XXL:{r:1,l:0}, XXXL:{r:3,l:0} } },
+                { sku: 'BPJ-026', nama: 'Senopati', foto: '', kategori: 'KATUN', sizes: { S:2, M:21, L:21, XL:17, XXL:9, XXXL:9 }, sizeDetails: { S:{r:2,l:0}, M:{r:11,l:10}, L:{r:11,l:10}, XL:{r:17,l:0}, XXL:{r:9,l:0}, XXXL:{r:9,l:0} } },
+                { sku: 'BPJ-027', nama: 'Arkhananta', foto: '', kategori: 'KATUN', sizes: { S:12, M:7, L:16, XL:12, XXL:19, XXXL:11 }, sizeDetails: { S:{r:12,l:0}, M:{r:7,l:0}, L:{r:16,l:0}, XL:{r:12,l:0}, XXL:{r:19,l:0}, XXXL:{r:11,l:0} } },
+                { sku: 'BPJ-028', nama: 'Wikrama', foto: '', kategori: 'KATUN', sizes: { S:10, M:18, L:20, XL:28, XXL:2, XXXL:12 }, sizeDetails: { S:{r:10,l:0}, M:{r:18,l:0}, L:{r:20,l:0}, XL:{r:28,l:0}, XXL:{r:2,l:0}, XXXL:{r:12,l:0} } },
+                { sku: 'BPJ-029', nama: 'Sidomukti', foto: '', kategori: 'KATUN', sizes: { S:9, M:31, L:41, XL:36, XXL:23, XXXL:22 }, sizeDetails: { S:{r:4,l:5}, M:{r:11,l:20}, L:{r:21,l:20}, XL:{r:4,l:32}, XXL:{r:10,l:13}, XXXL:{r:10,l:12} } },
+                { sku: 'BPJ-030', nama: 'Arkhananta Brown', foto: '', kategori: 'KATUN', sizes: { S:14, M:15, L:5, XL:0, XXL:0, XXXL:7 }, sizeDetails: { S:{r:14,l:0}, M:{r:15,l:0}, L:{r:5,l:0}, XL:{r:0,l:0}, XXL:{r:0,l:0}, XXXL:{r:7,l:0} } },
+                { sku: 'BPJ-031', nama: 'Ningratan Panjang', foto: '', kategori: 'KATUN', sizes: { S:1, M:14, L:20, XL:8, XXL:6, XXXL:16 }, sizeDetails: { S:{r:1,l:0}, M:{r:14,l:0}, L:{r:20,l:0}, XL:{r:8,l:0}, XXL:{r:6,l:0}, XXXL:{r:16,l:0} } },
+                { sku: 'BPJ-032', nama: 'Ningratan Pendek', foto: '', kategori: 'KATUN', sizes: { S:4, M:13, L:32, XL:1, XXL:8, XXXL:6 }, sizeDetails: { S:{r:4,l:0}, M:{r:13,l:0}, L:{r:32,l:0}, XL:{r:1,l:0}, XXL:{r:8,l:0}, XXXL:{r:6,l:0} } },
+                
+                { sku: 'BPJ-033', nama: 'Dua Burung Hitam', foto: '', kategori: 'KATUN', sizes: { S:5, M:4, L:0, XL:6, XXL:9, XXXL:9 }, sizeDetails: { S:{r:5,l:0}, M:{r:4,l:0}, L:{r:0,l:0}, XL:{r:6,l:0}, XXL:{r:9,l:0}, XXXL:{r:9,l:0} } },
+                { sku: 'BPJ-034', nama: 'Jawanegara Grey', foto: '', kategori: 'KATUN', sizes: { S:7, M:6, L:11, XL:10, XXL:0, XXXL:0 }, sizeDetails: { S:{r:7,l:0}, M:{r:6,l:0}, L:{r:11,l:0}, XL:{r:10,l:0}, XXL:{r:0,l:0}, XXXL:{r:0,l:0} } },
+                { sku: 'BPJ-035', nama: 'Danarhadi', foto: '', kategori: 'KATUN', sizes: { S:0, M:19, L:16, XL:19, XXL:10, XXXL:6 }, sizeDetails: { S:{r:0,l:0}, M:{r:19,l:0}, L:{r:16,l:0}, XL:{r:19,l:0}, XXL:{r:10,l:0}, XXXL:{r:6,l:0} } },
+                { sku: 'BPJ-036', nama: 'Prabujawa', foto: '', kategori: 'KATUN', sizes: { S:9, M:1, L:11, XL:18, XXL:6, XXXL:7 }, sizeDetails: { S:{r:9,l:0}, M:{r:1,l:0}, L:{r:11,l:0}, XL:{r:18,l:0}, XXL:{r:6,l:0}, XXXL:{r:7,l:0} } },
+                { sku: 'BPJ-037', nama: 'Dua Burung Hijau', foto: '', kategori: 'KATUN', sizes: { S:0, M:17, L:29, XL:12, XXL:10, XXXL:6 }, sizeDetails: { S:{r:0,l:0}, M:{r:2,l:15}, L:{r:9,l:20}, XL:{r:12,l:0}, XXL:{r:3,l:7}, XXXL:{r:1,l:5} } },
+                { sku: 'BPJ-038', nama: 'Siliwangi Gold', foto: '', kategori: 'KATUN', sizes: { S:13, M:29, L:17, XL:28, XXL:8, XXXL:11 }, sizeDetails: { S:{r:13,l:0}, M:{r:29,l:0}, L:{r:17,l:0}, XL:{r:28,l:0}, XXL:{r:8,l:0}, XXXL:{r:11,l:0} } },
+                { sku: 'BPJ-039', nama: 'Adansani', foto: '', kategori: 'KATUN', sizes: { S:5, M:9, L:14, XL:14, XXL:3, XXXL:10 }, sizeDetails: { S:{r:5,l:0}, M:{r:9,l:0}, L:{r:14,l:0}, XL:{r:14,l:0}, XXL:{r:3,l:0}, XXXL:{r:10,l:0} } },
+                { sku: 'BPJ-040', nama: 'Maheswara', foto: '', kategori: 'KATUN', sizes: { S:7, M:12, L:12, XL:15, XXL:8, XXXL:7 }, sizeDetails: { S:{r:7,l:0}, M:{r:12,l:0}, L:{r:9,l:3}, XL:{r:5,l:10}, XXL:{r:8,l:0}, XXXL:{r:7,l:0} } },
+                { sku: 'BPJ-041', nama: 'Bimantara', foto: '', kategori: 'KATUN', sizes: { S:6, M:24, L:17, XL:18, XXL:16, XXXL:18 }, sizeDetails: { S:{r:6,l:0}, M:{r:24,l:0}, L:{r:17,l:0}, XL:{r:18,l:0}, XXL:{r:16,l:0}, XXXL:{r:18,l:0} } },
+                { sku: 'BPJ-042', nama: 'Ranjana', foto: '', kategori: 'KATUN', sizes: { S:3, M:10, L:16, XL:3, XXL:6, XXXL:2 }, sizeDetails: { S:{r:3,l:0}, M:{r:10,l:0}, L:{r:16,l:0}, XL:{r:3,l:0}, XXL: {r:6,l:0}, XXXL:{r:2,l:0} } },
+                { sku: 'BPJ-043', nama: 'Dharmayudha', foto: '', kategori: 'KATUN', sizes: { S:1, M:5, L:4, XL:21, XXL:0, XXXL:10 }, sizeDetails: { S:{r:1,l:0}, M:{r:5,l:0}, L:{r:4,l:0}, XL:{r:21,l:0}, XXL:{r:0,l:0}, XXXL:{r:10,l:0} } },
+                { sku: 'BPJ-044', nama: 'Adhiwangsa', foto: '', kategori: 'KATUN', sizes: { S:13, M:24, L:13, XL:26, XXL:13, XXXL:18 }, sizeDetails: { S:{r:13,l:0}, M:{r:24,l:0}, L:{r:13,l:0}, XL:{r:26,l:0}, XXL:{r:13,l:0}, XXXL:{r:18,l:0} } },
+                { sku: 'BPJ-045', nama: 'Devanka', foto: '', kategori: 'KATUN', sizes: { S:10, M:12, L:21, XL:9, XXL:13, XXXL:16 }, sizeDetails: { S:{r:10,l:0}, M:{r:12,l:0}, L:{r:21,l:0}, XL:{r:9,l:0}, XXL:{r:13,l:0}, XXXL:{r:6,l:10} } },
+                { sku: 'BPJ-046', nama: 'Bhaskara', foto: '', kategori: 'KATUN', sizes: { S:14, M:6, L:17, XL:20, XXL:18, XXXL:15 }, sizeDetails: { S:{r:14,l:0}, M:{r:6,l:0}, L:{r:7,l:10}, XL:{r:10,l:10}, XXL:{r:18,l:0}, XXXL:{r:5,l:10} } },
+                { sku: 'BPJ-047', nama: 'Abimanyu', foto: '', kategori: 'KATUN', sizes: { S:13, M:16, L:2, XL:1, XXL:17, XXXL:8 }, sizeDetails: { S:{r:13,l:0}, M:{r:16,l:0}, L:{r:2,l:0}, XL:{r:1,l:0}, XXL:{r:17,l:0}, XXXL:{r:8,l:0} } },
+                { sku: 'BPJ-048', nama: 'Koko Nayeswara Navy', foto: '', kategori: 'KATUN', sizes: { S:9, M:6, L:13, XL:4, XXL:12, XXXL:9 }, sizeDetails: { S:{r:9,l:0}, M:{r:6,l:0}, L:{r:13,l:0}, XL:{r:4,l:0}, XXL:{r:12,l:0}, XXXL:{r:9,l:0} } },
+                { sku: 'BPJ-049', nama: 'Koko Yudistira Burgundy', foto: '', kategori: 'KATUN', sizes: { S:8, M:9, L:7, XL:22, XXL:0, XXXL:19 }, sizeDetails: { S:{r:8,l:0}, M:{r:9,l:0}, L:{r:7,l:0}, XL:{r:22,l:0}, XXL:{r:0,l:0}, XXXL:{r:19,l:0} } },
+                { sku: 'BPJ-050', nama: 'Koko Gibranera', foto: '', kategori: 'KATUN', sizes: { S:5, M:15, L:15, XL:20, XXL:9, XXXL:9 }, sizeDetails: { S:{r:5,l:0}, M:{r:5,l:10}, L:{r:5,l:10}, XL:{r:5,l:15}, XXL:{r:9,l:0}, XXXL:{r:9,l:0} } },
+                
+                { sku: 'BPJ-051', nama: 'Nayudwara', foto: '', kategori: 'KATUN', sizes: { S:0, M:4, L:8, XL:7, XXL:5, XXXL:1 }, sizeDetails: { S:{r:0,l:0}, M:{r:4,l:0}, L:{r:8,l:0}, XL:{r:7,l:0}, XXL:{r:5,l:0}, XXXL:{r:1,l:0} } },
+                { sku: 'BPJ-052', nama: 'Yudhaneras', foto: '', kategori: 'KATUN', sizes: { S:5, M:11, L:8, XL:2, XXL:12, XXXL:4 }, sizeDetails: { S:{r:5,l:0}, M:{r:8,l:3}, L:{r:8,l:0}, XL:{r:2,l:0}, XXL:{r:5,l:7}, XXXL:{r:4,l:0} } },
+                { sku: 'BPJ-053', nama: 'Defandra', foto: '', kategori: 'KATUN', sizes: { S:0, M:5, L:10, XL:8, XXL:10, XXXL:18 }, sizeDetails: { S:{r:0,l:0}, M:{r:5,l:0}, L:{r:10,l:0}, XL:{r:8,l:0}, XXL:{r:10,l:0}, XXXL:{r:8,l:10} } },
+                { sku: 'BPJ-054', nama: 'Ulansari', foto: '', kategori: 'KATUN', sizes: { S:8, M:15, L:42, XL:37, XXL:14, XXXL:20 }, sizeDetails: { S:{r:8,l:0}, M:{r:15,l:0}, L:{r:18,l:24}, XL:{r:24,l:13}, XXL:{r:14,l:0}, XXXL:{r:20,l:0} } },
+                { sku: 'BPJ-055', nama: 'Gibranera', foto: '', kategori: 'KATUN', sizes: { S:7, M:15, L:20, XL:16, XXL:13, XXXL:12 }, sizeDetails: { S:{r:7,l:0}, M:{r:3,l:12}, L:{r:6,l:14}, XL:{r:0,l:16}, XXL:{r:3,l:10}, XXXL:{r:2,l:10} } },
+                { sku: 'BPJ-056', nama: 'Nayeswara Navy', foto: '', kategori: 'KATUN', sizes: { S:12, M:16, L:29, XL:15, XXL:14, XXXL:24 }, sizeDetails: { S:{r:12,l:0}, M:{r:3,l:13}, L:{r:20,l:9}, XL:{r:4,l:11}, XXL:{r:8,l:6}, XXXL:{r:18,l:6} } },
+                { sku: 'BPJ-057', nama: 'Wirasana', foto: '', kategori: 'KATUN', sizes: { S:9, M:8, L:17, XL:18, XXL:9, XXXL:8 }, sizeDetails: { S:{r:8,l:1}, M:{r:8,l:0}, L:{r:9,l:8}, XL:{r:8,l:10}, XXL:{r:9,l:0}, XXXL:{r:8,l:0} } },
+                { sku: 'BPJ-058', nama: 'Shankara', foto: '', kategori: 'KATUN', sizes: { S:4, M:27, L:24, XL:25, XXL:10, XXXL:8 }, sizeDetails: { S:{r:4,l:0}, M:{r:27,l:0}, L:{r:24,l:0}, XL:{r:25,l:0}, XXL:{r:10,l:0}, XXXL:{r:8,l:0} } },
+                { sku: 'BPJ-059', nama: 'Adhijawa Black', foto: '', kategori: 'KATUN', sizes: { S:0, M:14, L:0, XL:17, XXL:7, XXXL:9 }, sizeDetails: { S:{r:0,l:0}, M:{r:14,l:0}, L:{r:0,l:0}, XL:{r:17,l:0}, XXL:{r:7,l:0}, XXXL:{r:9,l:0} } },
+                { sku: 'BPJ-060', nama: 'Gardapati', foto: '', kategori: 'KATUN', sizes: { S:5, M:9, L:7, XL:6, XXL:6, XXXL:5 }, sizeDetails: { S:{r:5,l:0}, M:{r:9,l:0}, L:{r:7,l:0}, XL:{r:6,l:0}, XXL:{r:6,l:0}, XXXL:{r:5,l:0} } },
+                { sku: 'BPJ-061', nama: 'Megamendung', foto: '', kategori: 'KATUN', sizes: { S:5, M:14, L:10, XL:3, XXL:7, XXXL:6 }, sizeDetails: { S:{r:5,l:0}, M:{r:9,l:5}, L:{r:5,l:5}, XL:{r:3,l:0}, XXL:{r:7,l:0}, XXXL:{r:6,l:0} } },
+                { sku: 'BPJ-062', nama: 'Arjuna', foto: '', kategori: 'KATUN', sizes: { S:3, M:8, L:8, XL:5, XXL:0, XXXL:1 }, sizeDetails: { S:{r:3,l:0}, M:{r:8,l:0}, L:{r:8,l:0}, XL:{r:5,l:0}, XXL:{r:0,l:0}, XXXL:{r:1,l:0} } },
+                { sku: 'BPJ-063', nama: 'Kencana', foto: '', kategori: 'KATUN', sizes: { S:9, M:0, L:0, XL:3, XXL:13, XXXL:0 }, sizeDetails: { S:{r:9,l:0}, M:{r:0,l:0}, L:{r:0,l:0}, XL:{r:3,l:0}, XXL:{r:13,l:0}, XXXL:{r:0,l:0} } },
+                { sku: 'BPJ-064', nama: 'Adhijawa Brown', foto: '', kategori: 'KATUN', sizes: { S:0, M:12, L:0, XL:27, XXL:19, XXXL:20 }, sizeDetails: { S:{r:0,l:0}, M:{r:12,l:0}, L:{r:0,l:0}, XL:{r:27,l:0}, XXL:{r:19,l:0}, XXXL:{r:20,l:0} } },
+                { sku: 'BPJ-065', nama: 'Jayabaya', foto: '', kategori: 'KATUN', sizes: { S:5, M:17, L:26, XL:22, XXL:13, XXXL:9 }, sizeDetails: { S:{r:5,l:0}, M:{r:3,l:14}, L:{r:1,l:25}, XL:{r:22,l:0}, XXL:{r:8,l:5}, XXXL:{r:4,l:5} } },
+                { sku: 'BPJ-066', nama: 'Antajawa', foto: '', kategori: 'KATUN', sizes: { S:5, M:18, L:26, XL:54, XXL:16, XXXL:16 }, sizeDetails: { S:{r:5,l:0}, M:{r:18,l:0}, L:{r:26,l:0}, XL:{r:54,l:0}, XXL:{r:16,l:0}, XXXL:{r:16,l:0} } },
+                { sku: 'BPJ-067', nama: 'Adayana', foto: '', kategori: 'KATUN', sizes: { S:9, M:20, L:16, XL:30, XXL:6, XXXL:19 }, sizeDetails: { S:{r:9,l:0}, M:{r:20,l:0}, L:{r:16,l:0}, XL:{r:30,l:0}, XXL:{r:6,l:0}, XXXL:{r:19,l:0} } },
+                { sku: 'BPJ-068', nama: 'Jawanegara Hijau', foto: '', kategori: 'KATUN', sizes: { S:12, M:21, L:0, XL:14, XXL:5, XXXL:8 }, sizeDetails: { S:{r:12,l:0}, M:{r:11,l:10}, L:{r:0,l:0}, XL:{r:7,l:7}, XXL:{r:5,l:0}, XXXL:{r:8,l:0} } },
+                
+                { sku: 'BPJ-069', nama: 'Hadinata', foto: '', kategori: 'KATUN', sizes: { S:1, M:5, L:14, XL:7, XXL:5, XXXL:5 }, sizeDetails: { S:{r:1,l:0}, M:{r:5,l:0}, L:{r:14,l:0}, XL:{r:7,l:0}, XXL:{r:5,l:0}, XXXL:{r:5,l:0} } },
+                { sku: 'BPJ-070', nama: 'Guenara', foto: '', kategori: 'KATUN', sizes: { S:16, M:29, L:24, XL:35, XXL:19, XXXL:16 }, sizeDetails: { S:{r:10,l:6}, M:{r:10,l:19}, L:{r:4,l:20}, XL:{r:25,l:10}, XXL:{r:0,l:19}, XXXL:{r:12,l:4} } },
+                { sku: 'BPJ-071', nama: 'Dua Burung Biru', foto: '', kategori: 'KATUN', sizes: { S:9, M:20, L:0, XL:28, XXL:6, XXXL:13 }, sizeDetails: { S:{r:9,l:0}, M:{r:20,l:0}, L:{r:0,l:0}, XL:{r:28,l:0}, XXL:{r:6,l:0}, XXXL:{r:13,l:0} } },
+                { sku: 'BPJ-072', nama: 'Kusuma', foto: '', kategori: 'KATUN', sizes: { S:2, M:5, L:21, XL:20, XXL:7, XXXL:9 }, sizeDetails: { S:{r:2,l:0}, M:{r:5,l:0}, L:{r:21,l:0}, XL:{r:20,l:0}, XXL:{r:7,l:0}, XXXL:{r:9,l:0} } },
+                { sku: 'BPJ-073', nama: 'Aryana', foto: '', kategori: 'KATUN', sizes: { S:13, M:9, L:20, XL:11, XXL:8, XXXL:3 }, sizeDetails: { S:{r:13,l:0}, M:{r:9,l:0}, L:{r:20,l:0}, XL:{r:11,l:0}, XXL:{r:8,l:0}, XXXL:{r:3,l:0} } },
+                { sku: 'BPJ-074', nama: 'Burung Cendrawasih', foto: '', kategori: 'KATUN', sizes: { S:4, M:7, L:12, XL:12, XXL:1, XXXL:8 }, sizeDetails: { S:{r:4,l:0}, M:{r:7,l:0}, L:{r:12,l:0}, XL:{r:12,l:0}, XXL:{r:1,l:0}, XXXL:{r:8,l:0} } },
+                { sku: 'BPJ-075', nama: 'Naryama', foto: '', kategori: 'KATUN', sizes: { S:13, M:20, L:49, XL:39, XXL:15, XXXL:16 }, sizeDetails: { S:{r:13,l:0}, M:{r:20,l:0}, L:{r:49,l:0}, XL:{r:39,l:0}, XXL:{r:11,l:4}, XXXL:{r:11,l:5} } },
+                { sku: 'BPJ-076', nama: 'Adhijawa Bata', foto: '', kategori: 'KATUN', sizes: { S:16, M:26, L:27, XL:27, XXL:27, XXXL:18 }, sizeDetails: { S:{r:16,l:0}, M:{r:26,l:0}, L:{r:18,l:9}, XL:{r:7,l:20}, XXL:{r:27,l:0}, XXXL:{r:18,l:0} } },
+                { sku: 'BPJ-077', nama: 'Merak', foto: '', kategori: 'KATUN', sizes: { S:13, M:10, L:27, XL:25, XXL:15, XXXL:12 }, sizeDetails: { S:{r:13,l:0}, M:{r:10,l:0}, L:{r:27,l:0}, XL:{r:25,l:0}, XXL:{r:15,l:0}, XXXL:{r:12,l:0} } },
+                { sku: 'BPJ-078', nama: 'Kersayana', foto: '', kategori: 'KATUN', sizes: { S:3, M:13, L:27, XL:16, XXL:10, XXXL:10 }, sizeDetails: { S:{r:3,l:0}, M:{r:13,l:0}, L:{r:27,l:0}, XL:{r:16,l:0}, XXL:{r:10,l:0}, XXXL:{r:10,l:0} } },
+                { sku: 'BPJ-079', nama: 'Parang/Jeevan', foto: '', kategori: 'KATUN', sizes: { S:11, M:9, L:15, XL:22, XXL:10, XXXL:10 }, sizeDetails: { S:{r:11,l:0}, M:{r:9,l:0}, L:{r:15,l:0}, XL:{r:22,l:0}, XXL:{r:10,l:0}, XXXL:{r:10,l:0} } },
+                { sku: 'BPJ-080', nama: 'Abhisaka', foto: '', kategori: 'KATUN', sizes: { S:6, M:5, L:15, XL:8, XXL:5, XXXL:5 }, sizeDetails: { S:{r:6,l:0}, M:{r:5,l:0}, L:{r:15,l:0}, XL:{r:8,l:0}, XXL:{r:5,l:0}, XXXL:{r:5,l:0} } },
+                { sku: 'BPJ-081', nama: 'Adhijawa Navy', foto: '', kategori: 'KATUN', sizes: { S:2, M:21, L:17, XL:26, XXL:21, XXXL:8 }, sizeDetails: { S:{r:2,l:0}, M:{r:21,l:0}, L:{r:17,l:0}, XL:{r:26,l:0}, XXL:{r:21,l:0}, XXXL:{r:8,l:0} } },
+                { sku: 'BPJ-082', nama: 'Arkatama', foto: '', kategori: 'KATUN', sizes: { S:6, M:3, L:4, XL:11, XXL:5, XXXL:7 }, sizeDetails: { S:{r:6,l:0}, M:{r:3,l:0}, L:{r:4,l:0}, XL:{r:11,l:0}, XXL:{r:5,l:0}, XXXL:{r:7,l:0} } },
+                { sku: 'BPJ-083', nama: 'Sidharta', foto: '', kategori: 'KATUN', sizes: { S:16, M:22, L:25, XL:35, XXL:17, XXXL:14 }, sizeDetails: { S:{r:16,l:0}, M:{r:22,l:0}, L:{r:25,l:0}, XL:{r:35,l:0}, XXL:{r:17,l:0}, XXXL:{r:14,l:0} } },
+                { sku: 'BPJ-084', nama: 'Manggala', foto: '', kategori: 'KATUN', sizes: { S:8, M:13, L:15, XL:19, XXL:13, XXXL:15 }, sizeDetails: { S:{r:8,l:0}, M:{r:13,l:0}, L:{r:15,l:0}, XL:{r:19,l:0}, XXL:{r:13,l:0}, XXXL:{r:15,l:0} } },
+                { sku: 'BPJ-085', nama: 'Arkhana', foto: '', kategori: 'KATUN', sizes: { S:4, M:6, L:12, XL:12, XXL:6, XXXL:8 }, sizeDetails: { S:{r:4,l:0}, M:{r:6,l:0}, L:{r:12,l:0}, XL:{r:12,l:0}, XXL:{r:6,l:0}, XXXL:{r:8,l:0} } },
+                { sku: 'BPJ-086', nama: 'Omkara', foto: '', kategori: 'KATUN', sizes: { S:3, M:5, L:11, XL:10, XXL:3, XXXL:5 }, sizeDetails: { S:{r:3,l:0}, M:{r:5,l:0}, L:{r:6,l:5}, XL:{r:5,l:5}, XXL:{r:3,l:0}, XXXL:{r:5,l:0} } },
+                
+                { sku: 'BPJ-087', nama: 'Ganendra', foto: '', kategori: 'KATUN', sizes: { S:4, M:27, L:22, XL:28, XXL:10, XXXL:12 }, sizeDetails: { S:{r:4,l:0}, M:{r:14,l:13}, L:{r:12,l:10}, XL:{r:13,l:15}, XXL:{r:0,l:10}, XXXL:{r:12,l:0} } },
+                { sku: 'BPJ-088', nama: 'Adhijawa Blue', foto: '', kategori: 'KATUN', sizes: { S:14, M:31, L:35, XL:41, XXL:21, XXXL:23 }, sizeDetails: { S:{r:14,l:0}, M:{r:9,l:22}, L:{r:17,l:18}, XL:{r:21,l:20}, XXL:{r:3,l:18}, XXXL:{r:13,l:10} } },
+                { sku: 'BPJ-089', nama: 'Kivandra', foto: '', kategori: 'KATUN', sizes: { S:12, M:24, L:41, XL:34, XXL:22, XXXL:22 }, sizeDetails: { S:{r:12,l:0}, M:{r:24,l:0}, L:{r:20,l:21}, XL:{r:25,l:9}, XXL:{r:12,l:10}, XXXL:{r:12,l:10} } },
+                { sku: 'BPJ-090', nama: 'Bhaskara Brown', foto: '', kategori: 'KATUN', sizes: { S:10, M:2, L:4, XL:37, XXL:10, XXXL:21 }, sizeDetails: { S:{r:10,l:0}, M:{r:2,l:0}, L:{r:4,l:0}, XL:{r:37,l:0}, XXL:{r:10,l:0}, XXXL:{r:21,l:0} } },
+                { sku: 'BPJ-091', nama: 'Khanindra', foto: '', kategori: 'KATUN', sizes: { S:5, M:10, L:49, XL:31, XXL:15, XXXL:17 }, sizeDetails: { S:{r:5,l:0}, M:{r:0,l:10}, L:{r:25,l:24}, XL:{r:21,l:10}, XXL:{r:15,l:0}, XXXL:{r:17,l:0} } },
+                { sku: 'BPJ-092', nama: 'Jayandra', foto: '', kategori: 'KATUN', sizes: { S:9, M:5, L:14, XL:13, XXL:8, XXXL:9 }, sizeDetails: { S:{r:9,l:0}, M:{r:5,l:0}, L:{r:14,l:0}, XL:{r:13,l:0}, XXL:{r:8,l:0}, XXXL:{r:9,l:0} } },
+                { sku: 'BPJ-093', nama: 'Adhyaksa Navy', foto: '', kategori: 'KATUN', sizes: { S:4, M:5, L:13, XL:12, XXL:8, XXXL:9 }, sizeDetails: { S:{r:4,l:0}, M:{r:5,l:0}, L:{r:5,l:8}, XL:{r:5,l:7}, XXL:{r:4,l:4}, XXXL:{r:4,l:5} } },
+                { sku: 'BPJ-094', nama: 'Adhyaksa Mustard', foto: '', kategori: 'KATUN', sizes: { S:1, M:2, L:4, XL:6, XXL:6, XXXL:6 }, sizeDetails: { S:{r:1,l:0}, M:{r:2,l:0}, L:{r:4,l:0}, XL:{r:6,l:0}, XXL:{r:6,l:0}, XXXL:{r:6,l:0} } },
+                { sku: 'BPJ-095', nama: 'Kaivan Terracota', foto: '', kategori: 'KATUN', sizes: { S:9, M:29, L:30, XL:32, XXL:11, XXXL:12 }, sizeDetails: { S:{r:9,l:0}, M:{r:9,l:20}, L:{r:10,l:20}, XL:{r:5,l:27}, XXL: {r:11,l:0}, XXXL:{r:10,l:2} } },
+                { sku: 'BPJ-096', nama: 'Kaivan Navy', foto: '', kategori: 'KATUN', sizes: { S:9, M:16, L:24, XL:40, XXL:17, XXXL:8 }, sizeDetails: { S:{r:9,l:0}, M:{r:16,l:0}, L:{r:24,l:0}, XL: {r:40,l:0}, XXL:{r:17,l:0}, XXXL:{r:8,l:0} } },
+                { sku: 'BPJ-097', nama: 'Adhijawa Green', foto: '', kategori: 'KATUN', sizes: { S:12, M:42, L:51, XL:44, XXL:36, XXXL:29 }, sizeDetails: { S:{r:12,l:0}, M:{r:17,l:25}, L:{r:11,l:40}, XL:{r:19,l:25}, XXL:{r:16,l:20}, XXXL:{r:19,l:10} } },
+                { sku: 'BPJ-098', nama: 'Adhinata', foto: '', kategori: 'KATUN', sizes: { S:4, M:5, L:14, XL:8, XXL:10, XXXL:6 }, sizeDetails: { S:{r:4,l:0}, M:{r:5,l:0}, L:{r:14,l:0}, XL:{r:3,l:5}, XXL:{r:6,l:4}, XXXL:{r:3,l:3} } },
+                { sku: 'BPJ-099', nama: 'Lakshan Black', foto: '', kategori: 'KATUN', sizes: { S:8, M:5, L:16, XL:17, XXL:10, XXXL:8 }, sizeDetails: { S:{r:8,l:0}, M:{r:5,l:0}, L:{r:16,l:0}, XL:{r:17,l:0}, XXL:{r:10,l:0}, XXXL:{r:8,l:0} } },
+                { sku: 'BPJ-100', nama: 'Lakshan Grey', foto: '', kategori: 'KATUN', sizes: { S:6, M:9, L:9, XL:17, XXL:10, XXXL:7 }, sizeDetails: { S:{r:6,l:0}, M:{r:9,l:0}, L:{r:9,l:0}, XL:{r:17,l:0}, XXL:{r:10,l:0}, XXXL:{r:7,l:0} } }
+            ];
         }
 
         function saveData() {
@@ -762,13 +954,104 @@ function doPost(e) {
             }
         }
 
-        function openGasSetup() { openModal('modal-gas-setup'); }
+        /* --- SIKRONISASI PENGATURAN AKSES GAS & PROTEKSI PASSWORD --- */
+        function openGasSetup() { 
+            // Validasi peran admin terlebih dahulu
+            if (!state.user || state.user.role !== 'ADMIN') {
+                showToast('Akses Ditolak: Hanya Akun ADMIN yang diperbolehkan!', 'error');
+                return;
+            }
+            // Kosongkan form password, buka modal password
+            document.getElementById('gas-pass-input').value = '';
+            openModal('modal-gas-auth');
+        }
+
+        function handleGasAuth(e) {
+            e.preventDefault();
+            const passwordValue = document.getElementById('gas-pass-input').value.trim();
+
+            if (passwordValue === 'rakelingan') {
+                closeModal('modal-gas-auth');
+                showToast('Verifikasi Admin Berhasil!', 'success');
+                // Beri jeda animasi transisi antar-modal agar mulus
+                setTimeout(() => {
+                    openModal('modal-gas-setup');
+                }, 350);
+            } else {
+                showToast('Password Salah! Akses Ditolak.', 'error');
+            }
+        }
 
         function copyGasScript() {
             const ta = document.getElementById('gas-script-code');
             ta.select();
             document.execCommand('copy');
             showToast('Kode Script Berhasil Disalin!');
+        }
+
+        let confirmActionCallback = null;
+
+        function showGenericConfirm(title, text, iconClass, btnClass, callback) {
+            document.getElementById('generic-confirm-title').innerText = title;
+            document.getElementById('generic-confirm-text').innerText = text;
+            
+            const iconDiv = document.getElementById('generic-confirm-icon');
+            iconDiv.className = `w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 text-xl ${iconClass}`;
+            
+            const btn = document.getElementById('generic-confirm-btn');
+            btn.className = `font-bold py-2.5 rounded-xl text-xs transition-all ${btnClass}`;
+            
+            confirmActionCallback = callback;
+            
+            btn.onclick = function() {
+                if(confirmActionCallback) confirmActionCallback();
+                closeModal('modal-generic-confirm');
+            };
+            
+            openModal('modal-generic-confirm');
+        }
+
+        function triggerResetLocal() {
+            showGenericConfirm(
+                "Reset Data Lokal",
+                "Apakah Anda yakin ingin mereset seluruh data lokal di browser Anda kembali ke 100 produk bawaan kode? Seluruh perubahan lokal Anda yang belum disimpan ke Cloud akan digantikan.",
+                "bg-rose-500/20 text-rose-500",
+                "bg-rose-500 hover:bg-rose-600 text-white",
+                function() {
+                    state.products = getDefaultProducts();
+                    state.transactions = [];
+                    state.logs = [];
+                    saveData();
+                    showToast("Data lokal berhasil di-reset ke bawaan!");
+                    renderDashboard();
+                    if(!document.getElementById('tab-rekap').classList.contains('hidden')) renderRekapStok();
+                    closeModal('modal-gas-setup');
+                }
+            );
+        }
+
+        function triggerForcePushDefault() {
+            showGenericConfirm(
+                "Unggah Bawaan ke Cloud",
+                "Apakah Anda yakin ingin mengunggah 100 produk bawaan ke Google Sheets? Ini akan menimpa (overwrite) seluruh produk di Google Sheets Anda dengan daftar default bawaan kode.",
+                "bg-amber-500/20 text-amber-500",
+                "bg-amber-500 hover:bg-amber-600 text-slate-900",
+                async function() {
+                    showLoading("Mengunggah Data Bawaan ke Cloud...");
+                    state.products = getDefaultProducts();
+                    saveData();
+                    try {
+                        await pushToGAS("Inisialisasi Database", "Mendaftarkan ulang 100 produk bawaan sistem ke Google Sheets");
+                        showToast("Berhasil mengunggah 100 produk ke Google Sheets!");
+                        renderDashboard();
+                        if(!document.getElementById('tab-rekap').classList.contains('hidden')) renderRekapStok();
+                        closeModal('modal-gas-setup');
+                    } catch(e) {
+                        showToast("Gagal mengunggah ke Cloud!", "error");
+                    }
+                    hideLoading();
+                }
+            );
         }
 
         async function pullFromGAS() {
@@ -824,11 +1107,13 @@ function doPost(e) {
             }
 
             try {
-                fetch(GAS_URL, {
+                await fetch(GAS_URL, {
                     method: 'POST',
                     body: JSON.stringify(payload)
                 });
-            } catch(e) {}
+            } catch(e) {
+                console.warn("Gagal melakukan sinkronisasi otomatis ke Google Sheets (Mode Offline aktif):", e);
+            }
         }
 
         async function uploadPhotoToDrive(base64Data, filename) {
@@ -845,7 +1130,9 @@ function doPost(e) {
                 });
                 const data = await response.json();
                 if(data.url) return data.url;
-            } catch(e) {}
+            } catch(e) {
+                console.error("Gagal mengunggah foto ke Drive:", e);
+            }
             return base64Data;
         }
 
@@ -928,7 +1215,7 @@ function doPost(e) {
             if (state.user.role === 'ADMIN') {
                 if (quickAddBtn) quickAddBtn.style.display = 'flex';
                 if (quickEditBtn) quickEditBtn.style.display = 'flex';
-                if (qaContainer) qaContainer.className = "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4";
+                if (qaContainer) qaContainer.className = "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4";
             } else {
                 if (quickAddBtn) quickAddBtn.style.display = 'none';
                 if (quickEditBtn) quickEditBtn.style.display = 'none';
@@ -991,8 +1278,23 @@ function doPost(e) {
         function renderDashboard() {
             const today = new Date().toISOString().split('T')[0];
             let totalStok = 0;
+            let katunSku = 0;
+            let katunStok = 0;
+            let poliSku = 0;
+            let poliStok = 0;
+
             state.products.forEach(p => {
-                totalStok += Object.values(p.sizes).reduce((a, b) => a + b, 0);
+                const prodStok = Object.values(p.sizes).reduce((a, b) => a + b, 0);
+                totalStok += prodStok;
+                
+                const cat = (p.kategori || 'POLI').toUpperCase();
+                if (cat === 'KATUN') {
+                    katunSku++;
+                    katunStok += prodStok;
+                } else {
+                    poliSku++;
+                    poliStok += prodStok;
+                }
             });
 
             let inToday = 0; let outToday = 0;
@@ -1007,9 +1309,13 @@ function doPost(e) {
             document.getElementById('dash-total-stok').innerText = totalStok.toLocaleString('id-ID');
             document.getElementById('dash-masuk-hari-ini').innerText = inToday.toLocaleString('id-ID');
             document.getElementById('dash-keluar-hari-ini').innerText = outToday.toLocaleString('id-ID');
+
+            document.getElementById('dash-katun-sku').innerText = katunSku;
+            document.getElementById('dash-katun-stok').innerText = katunStok.toLocaleString('id-ID');
+            document.getElementById('dash-poli-sku').innerText = poliSku;
+            document.getElementById('dash-poli-stok').innerText = poliStok.toLocaleString('id-ID');
         }
 
-        // ================= SISTEM PARSING TEKS CATATAN MANUAL =================
         function parseStockText(text) {
             const lines = text.split('\n');
             let currentProduct = null;
@@ -1022,11 +1328,9 @@ function doPost(e) {
                 line = line.trim();
                 if (!line) return;
 
-                const prodMatch = line.match(productRegex);
-                if (prodMatch) {
-                    currentProduct = prodMatch[1].trim().toLowerCase();
-                    // LOGIKA: Jika produk yang sama ditemukan lagi dalam teks, 
-                    // objek akan di-reset (overwrite) dengan data blok yang paling baru/terakhir.
+                const pMatch = line.match(productRegex);
+                if (pMatch) {
+                    currentProduct = pMatch[1].trim().toLowerCase();
                     parsedData[currentProduct] = {}; 
                 } else if (currentProduct) {
                     const sizeMatch = line.match(sizeRegex);
@@ -1049,6 +1353,7 @@ function doPost(e) {
         function processTextUpdate(e) {
             e.preventDefault();
             const text = document.getElementById('text-update-input').value;
+            const targetKategori = document.getElementById('text-update-kategori').value;
             const parsedData = parseStockText(text);
             
             if (Object.keys(parsedData).length === 0) {
@@ -1058,18 +1363,18 @@ function doPost(e) {
 
             let updatedCount = 0;
             let transactionsToAdd = [];
-            let logDetails = [];
 
             state.products.forEach(p => {
+                const pKategori = (p.kategori || 'POLI').toUpperCase();
+                if (pKategori !== targetKategori) return;
+
                 const pName = p.nama.toLowerCase();
-                // Mencari kecocokan nama produk secara fuzzy
                 let matchedKey = Object.keys(parsedData).find(k => pName === k || pName.includes(k) || k.includes(pName));
                 
                 if (matchedKey) {
                     const newData = parsedData[matchedKey];
                     let hasChange = false;
 
-                    // Inisialisasi sizeDetail jika belum ada
                     if(!p.sizeDetails) {
                         p.sizeDetails = {
                             S:{r:p.sizes.S, l:0}, M:{r:p.sizes.M, l:0}, L:{r:p.sizes.L, l:0}, 
@@ -1082,7 +1387,6 @@ function doPost(e) {
                             const oldTotal = p.sizes[size];
                             const newTotal = newData[size].r + newData[size].l;
                             
-                            // Menghitung selisih hanya untuk menyimpan riwayat (history/audit)
                             if (newTotal !== oldTotal) {
                                 const diff = newTotal - oldTotal;
                                 const type = diff > 0 ? 'IN' : 'OUT';
@@ -1096,8 +1400,6 @@ function doPost(e) {
                                 hasChange = true;
                             }
                             
-                            // LOGIKA UTAMA: Terapkan penimpaan (overwrite) nilai mutlak.
-                            // Aplikasi menjadikan catatan terakhir yang masuk sebagai satu-satunya data yang benar.
                             p.sizes[size] = newTotal;
                             p.sizeDetails[size] = { r: newData[size].r, l: newData[size].l };
                         }
@@ -1105,25 +1407,23 @@ function doPost(e) {
 
                     if (hasChange) {
                         updatedCount++;
-                        logDetails.push(p.sku);
                     }
                 }
             });
 
             if (updatedCount > 0) {
                 state.transactions.unshift(...transactionsToAdd);
-                // Memberikan keterangan jelas bahwa ini adalah Sinkronisasi Overwrite
-                logActivity('Sinkronisasi (Catatan)', `Stok ${updatedCount} produk diperbarui mengikuti catatan terakhir`);
+                logActivity('Sinkronisasi (Catatan)', `Stok ${updatedCount} produk [${targetKategori}] diperbarui mengikuti catatan terakhir`);
                 saveData();
-                pushToGAS('Sinkronisasi (Catatan)', `Update mutlak (overwrite) via teks untuk ${updatedCount} produk mengikuti data terakhir`, transactionsToAdd);
+                pushToGAS('Sinkronisasi (Catatan)', `Update mutlak (overwrite) via teks untuk ${updatedCount} produk [${targetKategori}] mengikuti data terakhir`, transactionsToAdd);
                 
-                showToast(`Sinkronisasi berhasil! Data mengikuti catatan terakhir.`);
+                showToast(`Sinkronisasi berhasil! ${updatedCount} produk [${targetKategori}] diperbarui.`);
                 renderDashboard();
                 if(!document.getElementById('tab-rekap').classList.contains('hidden')) renderRekapStok();
                 closeModal('modal-text-update');
                 document.getElementById('text-update-input').value = '';
             } else {
-                showToast('Stok saat ini sudah persis sama dengan catatan', 'error');
+                showToast(`Stok produk [${targetKategori}] sudah persis sama atau tidak ditemukan kecocokan nama produk di catatan`, 'error');
             }
         }
 
@@ -1154,20 +1454,28 @@ function doPost(e) {
                     let totalDisplay = totalSz === 0 ? `<span class="text-slate-600">0</span>` : `<span class="text-white">${totalSz}</span>`;
                     
                     let breakdownDisplay = `
-                        <div class="flex justify-between items-center gap-1 text-[11px] mt-1.5 w-full bg-slate-900/60 rounded-md py-1 px-1.5 font-mono shadow-inner border border-slate-700/50">
-                            <span class="${r > 0 ? 'text-emerald-400 font-extrabold' : 'text-slate-600'}" title="Stok di Rak">R:${r}</span>
-                            <span class="${l > 0 ? 'text-amber-400 font-extrabold' : 'text-slate-600'}" title="Stok Luar Rak">L:${l}</span>
+                        <div class="flex justify-between items-center gap-1 text-[10px] mt-1.5 w-full bg-slate-900/60 rounded-md py-1 px-1 font-mono border border-slate-700/50">
+                            <span class="${r > 0 ? 'text-emerald-400 font-bold' : 'text-slate-600'}" title="Stok di Rak">R:${r}</span>
+                            <span class="${l > 0 ? 'text-amber-400 font-bold' : 'text-slate-600'}" title="Stok Luar Rak">L:${l}</span>
                         </div>
                     `;
 
                     sizeCards += `
-                        <div class="bg-slate-800/20 p-2.5 rounded-2xl border border-slate-800/60 flex flex-col justify-center items-center min-h-[68px] hover:bg-slate-800/35 transition-all">
-                            <span class="text-slate-400 font-extrabold block text-[11px] mb-1">${label}</span>
-                            <span class="font-mono font-extrabold block leading-none text-center text-[15px]">${totalDisplay}</span>
+                        <div class="bg-slate-800/20 p-2 rounded-2xl border border-slate-800/60 flex flex-col justify-center items-center min-h-[64px] hover:bg-slate-800/35 transition-all">
+                            <span class="text-slate-400 font-extrabold block text-[10px] mb-0.5">${label}</span>
+                            <span class="font-mono font-extrabold block leading-none text-center text-sm">${totalDisplay}</span>
                             ${breakdownDisplay}
                         </div>
                     `;
                 });
+
+                let katBadge = '';
+                const katVal = (p.kategori || 'POLI').toUpperCase();
+                if(katVal === 'KATUN') {
+                    katBadge = `<span class="text-[10px] font-bold bg-amber-500/10 text-amber-500 border border-amber-500/20 px-2.5 py-0.5 rounded-full ml-1"><i class="fas fa-scroll text-[8px] mr-1"></i>KATUN</span>`;
+                } else {
+                    katBadge = `<span class="text-[10px] font-bold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 px-2.5 py-0.5 rounded-full ml-1"><i class="fas fa-layer-group text-[8px] mr-1"></i>POLI</span>`;
+                }
 
                 const card = document.createElement('div');
                 card.className = 'glass-card p-5 rounded-3xl flex flex-col gap-5 border border-slate-800/80 hover:border-slate-700/60 hover:shadow-2xl hover:shadow-amber-500/5 transition-all duration-300 fade-in';
@@ -1183,7 +1491,10 @@ function doPost(e) {
                         </div>
                         <div class="flex-1 min-w-0">
                             <h3 class="font-extrabold text-white text-base sm:text-lg tracking-tight truncate">${p.nama}</h3>
-                            <p class="text-xs font-semibold text-amber-500/90 font-mono tracking-wider mt-1 bg-slate-900/50 py-1 px-2.5 rounded-lg inline-block border border-slate-800">${p.sku}</p>
+                            <div class="flex items-center gap-2 mt-1.5 flex-wrap">
+                                <p class="text-xs font-semibold text-amber-500/90 font-mono tracking-wider bg-slate-900/50 py-1 px-2.5 rounded-lg inline-block border border-slate-800">${p.sku}</p>
+                                ${katBadge}
+                            </div>
                         </div>
                         <div class="text-right pl-2">
                             <span class="text-[9px] text-slate-400 font-bold block uppercase tracking-widest mb-0.5">Total</span>
@@ -1194,7 +1505,7 @@ function doPost(e) {
                     
                     <div class="bg-slate-900/50 p-4 rounded-2xl border border-slate-800/80">
                         <span class="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider block mb-3"><i class="fas fa-arrows-left-right text-[8px] text-slate-500"></i> Total per Ukuran & Rincian Stok</span>
-                        <div class="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-2 text-center text-xs">
+                        <div class="grid grid-cols-3 sm:grid-cols-6 gap-2 text-center text-xs">
                             ${sizeCards}
                         </div>
                     </div>
@@ -1232,7 +1543,6 @@ function doPost(e) {
 
             const product = state.products[productIndex];
 
-            // Setup default size detail if none
             if(!product.sizeDetails) {
                 product.sizeDetails = {
                     S:{r:product.sizes.S, l:0}, M:{r:product.sizes.M, l:0}, L:{r:product.sizes.L, l:0}, 
@@ -1247,7 +1557,6 @@ function doPost(e) {
                 }
                 product.sizes[size] -= qty;
                 
-                // Kurangi dari rak terlebih dahulu
                 if (product.sizeDetails[size].r >= qty) {
                     product.sizeDetails[size].r -= qty;
                 } else {
@@ -1330,6 +1639,7 @@ function doPost(e) {
             e.preventDefault();
             const sku = document.getElementById('add-sku').value.trim().toUpperCase();
             const nama = document.getElementById('add-nama').value.trim();
+            const kat = document.getElementById('add-kategori').value;
 
             if (state.products.find(p => p.sku === sku)) {
                 showToast('Gagal: Kode SKU sudah terdaftar!', 'error');
@@ -1349,13 +1659,13 @@ function doPost(e) {
             const xxl=parseInt(document.getElementById('add-xxl').value)||0, xxxl=parseInt(document.getElementById('add-xxxl').value)||0;
 
             const newProd = {
-                sku: sku, nama: nama, foto: finalPhotoUrl,
+                sku: sku, nama: nama, foto: finalPhotoUrl, kategori: kat,
                 sizes: { S: s, M: m, L: l, XL: xl, XXL: xxl, XXXL: xxxl },
                 sizeDetails: { S:{r:s, l:0}, M:{r:m, l:0}, L:{r:l, l:0}, XL:{r:xl, l:0}, XXL:{r:xxl, l:0}, XXXL:{r:xxxl, l:0} }
             };
 
             state.products.push(newProd);
-            logActivity('Tambah Produk', `SKU ${sku} (${nama}) didaftarkan`);
+            logActivity('Tambah Produk', `SKU ${sku} (${nama}) [${kat}] didaftarkan`);
             saveData();
             
             await pushToGAS('Tambah Produk', `Membuat data SKU ${sku}`);
@@ -1390,6 +1700,7 @@ function doPost(e) {
             document.getElementById('edit-old-sku').value = product.sku;
             document.getElementById('edit-sku').value = product.sku;
             document.getElementById('edit-nama').value = product.nama;
+            document.getElementById('edit-kategori').value = product.kategori || 'KATUN';
             
             document.getElementById('edit-s').value = product.sizes.S;
             document.getElementById('edit-m').value = product.sizes.M;
@@ -1415,6 +1726,7 @@ function doPost(e) {
             const oldSku = document.getElementById('edit-old-sku').value;
             const newSku = document.getElementById('edit-sku').value.trim().toUpperCase();
             const newNama = document.getElementById('edit-nama').value.trim();
+            const newKat = document.getElementById('edit-kategori').value;
 
             if (newSku !== oldSku && state.products.find(p => p.sku === newSku)) {
                 showToast('Gagal: Kode SKU baru sudah digunakan!', 'error');
@@ -1432,6 +1744,7 @@ function doPost(e) {
             selectedProductForEdit.sku = newSku;
             selectedProductForEdit.nama = newNama;
             selectedProductForEdit.foto = finalPhotoUrl;
+            selectedProductForEdit.kategori = newKat;
             
             if(!selectedProductForEdit.sizeDetails) selectedProductForEdit.sizeDetails = {};
 
@@ -1439,12 +1752,11 @@ function doPost(e) {
                 const newVal = parseInt(document.getElementById(`edit-${sz.toLowerCase()}`).value) || 0;
                 if (selectedProductForEdit.sizes[sz] !== newVal) {
                     selectedProductForEdit.sizes[sz] = newVal;
-                    // Reset rak configuration manually on edit overwrite
                     selectedProductForEdit.sizeDetails[sz] = { r: newVal, l: 0 }; 
                 }
             });
 
-            logActivity('Edit Produk', `SKU ${oldSku} disesuaikan ke SKU ${newSku} (${newNama})`);
+            logActivity('Edit Produk', `SKU ${oldSku} disesuaikan ke SKU ${newSku} (${newNama}) [${newKat}]`);
             saveData();
 
             await pushToGAS('Edit Produk', `Melakukan modifikasi SKU ${newSku}`);
@@ -1541,6 +1853,38 @@ function doPost(e) {
             const d = new Date(isoStr);
             return d.toLocaleDateString('id-ID', {day:'2-digit', month:'short', year:'numeric'}) + ' ' + 
                    d.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
+        }
+
+        function init() {
+            document.getElementById('gas-script-code').value = GAS_SCRIPT_TEMPLATE;
+            updateSyncIndicator();
+
+            const savedState = localStorage.getItem('wms_bpj_state_v5');
+            if (savedState) {
+                state = JSON.parse(savedState);
+                
+                // Migrasi & Verifikasi agar struktur data lama dan baru tidak tabrakan
+                state.products.forEach(p => {
+                    if (!p.kategori) {
+                        p.kategori = 'POLI';
+                    }
+                });
+                
+                // Menambahkan produk baru jika tidak ada dalam state lokal agar tidak menimpa data input manual pengguna
+                const listExSku = new Set(state.products.map(x => x.sku));
+                getDefaultProducts().forEach(dp => {
+                    if(!listExSku.has(dp.sku)) {
+                        state.products.push(dp);
+                    }
+                });
+                saveData();
+            } else {
+                state.products = getDefaultProducts();
+            }
+
+            if (state.user) {
+                showApp();
+            }
         }
 
         window.onload = init;
