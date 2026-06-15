@@ -537,29 +537,6 @@
         </div>
     </div>
 
-    <!-- Modal: Autentikasi Pengaturan GAS -->
-    <div id="modal-gas-auth" class="fixed inset-0 z-[125] flex items-center justify-center p-4 modal-overlay hidden opacity-0 transition-opacity">
-        <div class="glass-card w-full max-w-sm rounded-3xl p-6 transform scale-95 transition-transform" id="modal-gas-auth-content">
-            <div class="text-center mb-5">
-                <div class="w-12 h-12 bg-cyan-500/20 text-cyan-400 rounded-full flex items-center justify-center mx-auto mb-3 text-xl">
-                    <i class="fas fa-lock"></i>
-                </div>
-                <h3 class="text-base font-bold text-white">Buka Pengaturan GAS</h3>
-                <p class="text-xs text-slate-400 mt-2">Masukkan password sistem admin untuk membuka akses integrasi cloud</p>
-            </div>
-            
-            <form onsubmit="handleGasAuth(event)" class="space-y-4">
-                <div>
-                    <input type="password" id="gas-pass-input" required class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2.5 px-3 text-center text-sm text-white focus:outline-none focus:border-cyan-500 tracking-widest text-center" placeholder="••••••••">
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <button type="button" onclick="closeModal('modal-gas-auth')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold py-2.5 rounded-xl text-xs transition-all">Batal</button>
-                    <button type="submit" class="bg-cyan-500 hover:bg-cyan-600 text-slate-900 font-bold py-2.5 rounded-xl text-xs transition-all">Verifikasi</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
     <!-- Modal: Generic Confirmation -->
     <div id="modal-generic-confirm" class="fixed inset-0 z-[130] flex items-center justify-center p-4 modal-overlay hidden opacity-0 transition-opacity">
         <div class="glass-card w-full max-w-sm rounded-3xl p-6 transform scale-95 transition-transform" id="modal-generic-confirm-content">
@@ -898,12 +875,12 @@ function doPost(e) {
                 { sku: 'BPJ-064', nama: 'Adhijawa Brown', foto: '', kategori: 'KATUN', sizes: { S:0, M:12, L:0, XL:27, XXL:19, XXXL:20 }, sizeDetails: { S:{r:0,l:0}, M:{r:12,l:0}, L:{r:0,l:0}, XL:{r:27,l:0}, XXL:{r:19,l:0}, XXXL:{r:20,l:0} } },
                 { sku: 'BPJ-065', nama: 'Jayabaya', foto: '', kategori: 'KATUN', sizes: { S:5, M:17, L:26, XL:22, XXL:13, XXXL:9 }, sizeDetails: { S:{r:5,l:0}, M:{r:3,l:14}, L:{r:1,l:25}, XL:{r:22,l:0}, XXL:{r:8,l:5}, XXXL:{r:4,l:5} } },
                 { sku: 'BPJ-066', nama: 'Antajawa', foto: '', kategori: 'KATUN', sizes: { S:5, M:18, L:26, XL:54, XXL:16, XXXL:16 }, sizeDetails: { S:{r:5,l:0}, M:{r:18,l:0}, L:{r:26,l:0}, XL:{r:54,l:0}, XXL:{r:16,l:0}, XXXL:{r:16,l:0} } },
-                { sku: 'BPJ-067', nama: 'Adayana', foto: '', kategori: 'KATUN', sizes: { S:9, M:20, L:16, XL:30, XXL:6, XXXL:19 }, sizeDetails: { S:{r:9,l:0}, M:{r:20,l:0}, L:{r:16,l:0}, XL:{r:30,l:0}, XXL:{r:6,l:0}, XXXL:{r:19,l:0} } },
+                { sku: 'BPJ-067', nama: 'Adayana', foto: '', kategori: 'KATUN', sizes: { S:9, M:20, L:16, XL:30, XXL:6, XXXL:19 }, sizeDetails: { S:{r:9,l:0}, M:{r:20,l:0}, L:{r:16,l:0}, XL: {r:30,l:0}, XXL:{r:6,l:0}, XXXL:{r:19,l:0} } },
                 { sku: 'BPJ-068', nama: 'Jawanegara Hijau', foto: '', kategori: 'KATUN', sizes: { S:12, M:21, L:0, XL:14, XXL:5, XXXL:8 }, sizeDetails: { S:{r:12,l:0}, M:{r:11,l:10}, L:{r:0,l:0}, XL:{r:7,l:7}, XXL:{r:5,l:0}, XXXL:{r:8,l:0} } },
                 
                 { sku: 'BPJ-069', nama: 'Hadinata', foto: '', kategori: 'KATUN', sizes: { S:1, M:5, L:14, XL:7, XXL:5, XXXL:5 }, sizeDetails: { S:{r:1,l:0}, M:{r:5,l:0}, L:{r:14,l:0}, XL:{r:7,l:0}, XXL:{r:5,l:0}, XXXL:{r:5,l:0} } },
                 { sku: 'BPJ-070', nama: 'Guenara', foto: '', kategori: 'KATUN', sizes: { S:16, M:29, L:24, XL:35, XXL:19, XXXL:16 }, sizeDetails: { S:{r:10,l:6}, M:{r:10,l:19}, L:{r:4,l:20}, XL:{r:25,l:10}, XXL:{r:0,l:19}, XXXL:{r:12,l:4} } },
-                { sku: 'BPJ-071', nama: 'Dua Burung Biru', foto: '', kategori: 'KATUN', sizes: { S:9, M:20, L:0, XL:28, XXL:6, XXXL:13 }, sizeDetails: { S:{r:9,l:0}, M:{r:20,l:0}, L:{r:0,l:0}, XL:{r:28,l:0}, XXL:{r:6,l:0}, XXXL:{r:13,l:0} } },
+                { sku: 'BPJ-071', nama: 'Dua Burung Biru', foto: '', kategori: 'KATUN', sizes: { S:9, M:20, L:0, XL:28, XXL:6, XXXL:13 }, sizeDetails: { S:{r:9,l:0}, M:{r:20,l:0}, L:{r:0,l:0}, XL:{r:28,l:0}, XXL:{r:6,l:0}, XXXL: {r:13,l:0} } },
                 { sku: 'BPJ-072', nama: 'Kusuma', foto: '', kategori: 'KATUN', sizes: { S:2, M:5, L:21, XL:20, XXL:7, XXXL:9 }, sizeDetails: { S:{r:2,l:0}, M:{r:5,l:0}, L:{r:21,l:0}, XL:{r:20,l:0}, XXL:{r:7,l:0}, XXXL:{r:9,l:0} } },
                 { sku: 'BPJ-073', nama: 'Aryana', foto: '', kategori: 'KATUN', sizes: { S:13, M:9, L:20, XL:11, XXL:8, XXXL:3 }, sizeDetails: { S:{r:13,l:0}, M:{r:9,l:0}, L:{r:20,l:0}, XL:{r:11,l:0}, XXL:{r:8,l:0}, XXXL:{r:3,l:0} } },
                 { sku: 'BPJ-074', nama: 'Burung Cendrawasih', foto: '', kategori: 'KATUN', sizes: { S:4, M:7, L:12, XL:12, XXL:1, XXXL:8 }, sizeDetails: { S:{r:4,l:0}, M:{r:7,l:0}, L:{r:12,l:0}, XL:{r:12,l:0}, XXL:{r:1,l:0}, XXXL:{r:8,l:0} } },
@@ -954,33 +931,7 @@ function doPost(e) {
             }
         }
 
-        /* --- SIKRONISASI PENGATURAN AKSES GAS & PROTEKSI PASSWORD --- */
-        function openGasSetup() { 
-            // Validasi peran admin terlebih dahulu
-            if (!state.user || state.user.role !== 'ADMIN') {
-                showToast('Akses Ditolak: Hanya Akun ADMIN yang diperbolehkan!', 'error');
-                return;
-            }
-            // Kosongkan form password, buka modal password
-            document.getElementById('gas-pass-input').value = '';
-            openModal('modal-gas-auth');
-        }
-
-        function handleGasAuth(e) {
-            e.preventDefault();
-            const passwordValue = document.getElementById('gas-pass-input').value.trim();
-
-            if (passwordValue === 'rakelingan') {
-                closeModal('modal-gas-auth');
-                showToast('Verifikasi Admin Berhasil!', 'success');
-                // Beri jeda animasi transisi antar-modal agar mulus
-                setTimeout(() => {
-                    openModal('modal-gas-setup');
-                }, 350);
-            } else {
-                showToast('Password Salah! Akses Ditolak.', 'error');
-            }
-        }
+        function openGasSetup() { openModal('modal-gas-setup'); }
 
         function copyGasScript() {
             const ta = document.getElementById('gas-script-code');
@@ -1322,7 +1273,9 @@ function doPost(e) {
             const parsedData = {};
 
             const productRegex = /^\d+\.\s+(.+)$/i;
-            const sizeRegex = /^(S|M|L|XL|XXL|XXXL|3XL)\s*=\s*([-\d]+)\s*(?:<\s*(\d+)\s*>)?\s*$/i;
+            
+            // Regex diperbarui dengan (?:-\s*)? di awal untuk mendeteksi dan mengabaikan tanda hubung (-) sebelum nama ukuran
+            const sizeRegex = /^(?:-\s*)?(S|M|L|XL|XXL|XXXL|3XL)\s*=\s*([-\d]+)\s*(?:<\s*([-\d]+)\s*>)?\s*$/i;
 
             lines.forEach(line => {
                 line = line.trim();
@@ -1340,8 +1293,11 @@ function doPost(e) {
                         
                         let r = parseInt(sizeMatch[2]);
                         if (isNaN(r)) r = 0;
+                        else r = Math.abs(r); // Mengabaikan tanda minus pada nilai numerik rak
                         
                         let l = sizeMatch[3] ? parseInt(sizeMatch[3]) : 0;
+                        if (isNaN(l)) l = 0;
+                        else l = Math.abs(l); // Mengabaikan tanda minus pada nilai numerik luar rak
                         
                         parsedData[currentProduct][sizeName] = { r: r, l: l };
                     }
@@ -1365,6 +1321,7 @@ function doPost(e) {
             let transactionsToAdd = [];
 
             state.products.forEach(p => {
+                // Filter berdasarkan kategori yang dipilih pengguna
                 const pKategori = (p.kategori || 'POLI').toUpperCase();
                 if (pKategori !== targetKategori) return;
 
