@@ -607,6 +607,9 @@
                             <i class="fas fa-cloud-upload-alt"></i> Unggah Bawaan ke Cloud Sheet
                         </button>
                     </div>
+                    <button onclick="triggerResetStokKeNol()" class="w-full mt-3 bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/40 text-purple-400 font-bold py-2.5 px-3 rounded-xl text-xs transition-all flex items-center justify-center gap-1.5">
+                        <i class="fas fa-battery-empty"></i> Kosongkan Semua Stok (Reset ke 0)
+                    </button>
                 </div>
             </div>
         </div>
@@ -805,7 +808,7 @@ function doPost(e) {
 }`;
 
         function getDefaultProducts() {
-            return [
+            const baseProducts = [
                 { sku: 'BPJ-001', nama: 'Afandra', foto: '', kategori: 'POLI', sizes: { S: 49, M: 65, L: 86, XL: 83, XXL: 14, XXXL: 33 }, sizeDetails: { S:{r:19,l:30}, M:{r:15,l:50}, L:{r:12,l:74}, XL:{r:9,l:74}, XXL:{r:14,l:0}, XXXL:{r:15,l:18} } },
                 { sku: 'BPJ-002', nama: 'Yudhistir Burgundy', foto: '', kategori: 'POLI', sizes: { S: 8, M: 18, L: 31, XL: 29, XXL: 5, XXXL: 8 }, sizeDetails: { S:{r:8,l:0}, M:{r:8,l:10}, L:{r:1,l:30}, XL:{r:9,l:20}, XXL:{r:5,l:0}, XXXL:{r:8,l:0} } },
                 { sku: 'BPJ-003', nama: 'Ghandy', foto: '', kategori: 'POLI', sizes: { S: 10, M: 25, L: 32, XL: 31, XXL: 7, XXXL: 10 }, sizeDetails: { S:{r:5,l:5}, M:{r:5,l:20}, L:{r:2,l:30}, XL:{r:11,l:20}, XXL:{r:7,l:0}, XXXL:{r:10,l:0} } },
@@ -912,6 +915,26 @@ function doPost(e) {
                 { sku: 'BPJ-099', nama: 'Lakshan Black', foto: '', kategori: 'KATUN', sizes: { S:8, M:5, L:16, XL:17, XXL:10, XXXL:8 }, sizeDetails: { S:{r:8,l:0}, M:{r:5,l:0}, L:{r:16,l:0}, XL:{r:17,l:0}, XXL:{r:10,l:0}, XXXL:{r:8,l:0} } },
                 { sku: 'BPJ-100', nama: 'Lakshan Grey', foto: '', kategori: 'KATUN', sizes: { S:6, M:9, L:9, XL:17, XXL:10, XXXL:7 }, sizeDetails: { S:{r:6,l:0}, M:{r:9,l:0}, L:{r:9,l:0}, XL:{r:17,l:0}, XXL:{r:10,l:0}, XXXL:{r:7,l:0} } }
             ];
+
+            const allProducts = [];
+            baseProducts.forEach(p => {
+                allProducts.push(p);
+
+                // Buat otomatis varian Pendek jika namanya belum eksplisit memiliki 'panjang' atau 'pendek'
+                if (!p.nama.toLowerCase().includes('pendek') && !p.nama.toLowerCase().includes('panjang')) {
+                    const pPendek = JSON.parse(JSON.stringify(p));
+                    pPendek.sku = p.sku + '-P';
+                    pPendek.nama = p.nama + ' Pendek';
+                    // Mulai dari stok 0 untuk varian baru
+                    pPendek.sizes = { S: 0, M: 0, L: 0, XL: 0, XXL: 0, XXXL: 0 };
+                    pPendek.sizeDetails = { 
+                        S:{r:0,l:0}, M:{r:0,l:0}, L:{r:0,l:0}, 
+                        XL:{r:0,l:0}, XXL:{r:0,l:0}, XXXL:{r:0,l:0} 
+                    };
+                    allProducts.push(pPendek);
+                }
+            });
+            return allProducts;
         }
 
         function saveData() {
@@ -999,6 +1022,40 @@ function doPost(e) {
                         closeModal('modal-gas-setup');
                     } catch(e) {
                         showToast("Gagal mengunggah ke Cloud!", "error");
+                    }
+                    hideLoading();
+                }
+            );
+        }
+
+        function triggerResetStokKeNol() {
+            showGenericConfirm(
+                "Kosongkan Semua Stok",
+                "Apakah Anda yakin ingin mereset seluruh jumlah stok dari semua produk menjadi 0? Data motif produk TIDAK akan terhapus.",
+                "bg-purple-500/20 text-purple-400",
+                "bg-purple-500 hover:bg-purple-600 text-white",
+                async function() {
+                    showLoading("Mereset Stok ke 0...");
+                    
+                    state.products.forEach(p => {
+                        ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'].forEach(sz => {
+                            p.sizes[sz] = 0;
+                            if (!p.sizeDetails) p.sizeDetails = {};
+                            p.sizeDetails[sz] = { r: 0, l: 0 };
+                        });
+                    });
+
+                    logActivity('Reset Stok Total', 'Menyetel ulang semua stok produk (seluruh ukuran) menjadi 0');
+                    saveData();
+                    
+                    try {
+                        await pushToGAS("Reset Stok Total", "Menyetel ulang semua stok produk menjadi 0");
+                        showToast("Seluruh stok berhasil dikosongkan!");
+                        renderDashboard();
+                        if(!document.getElementById('tab-rekap').classList.contains('hidden')) renderRekapStok();
+                        closeModal('modal-gas-setup');
+                    } catch(e) {
+                        showToast("Gagal menyimpan ke Cloud!", "error");
                     }
                     hideLoading();
                 }
@@ -1270,9 +1327,11 @@ function doPost(e) {
         function parseStockText(text) {
             const lines = text.split('\n');
             let currentProduct = null;
+            let currentSubType = 'PANJANG';
             const parsedData = {};
 
             const productRegex = /^\d+\.\s+(.+)$/i;
+            const subTypeRegex = /^\*(PANJANG|PENDEK)\*$/i;
             
             // Regex diperbarui dengan (?:-\s*)? di awal untuk mendeteksi dan mengabaikan tanda hubung (-) sebelum nama ukuran
             const sizeRegex = /^(?:-\s*)?(S|M|L|XL|XXL|XXXL|3XL)\s*=\s*([-\d]+)\s*(?:<\s*([-\d]+)\s*>)?\s*$/i;
@@ -1282,9 +1341,14 @@ function doPost(e) {
                 if (!line) return;
 
                 const pMatch = line.match(productRegex);
+                const stMatch = line.match(subTypeRegex);
+
                 if (pMatch) {
                     currentProduct = pMatch[1].trim().toLowerCase();
+                    currentSubType = 'PANJANG'; // Reset ke panjang tiap ganti produk
                     parsedData[currentProduct] = {}; 
+                } else if (stMatch) {
+                    currentSubType = stMatch[1].toUpperCase();
                 } else if (currentProduct) {
                     const sizeMatch = line.match(sizeRegex);
                     if (sizeMatch) {
@@ -1299,7 +1363,13 @@ function doPost(e) {
                         if (isNaN(l)) l = 0;
                         else l = Math.abs(l); // Mengabaikan tanda minus pada nilai numerik luar rak
                         
-                        parsedData[currentProduct][sizeName] = { r: r, l: l };
+                        let key = currentProduct;
+                        if (currentSubType === 'PENDEK') {
+                            key = currentProduct + ' pendek';
+                        }
+                        
+                        if (!parsedData[key]) parsedData[key] = {};
+                        parsedData[key][sizeName] = { r: r, l: l };
                     }
                 }
             });
@@ -1325,8 +1395,20 @@ function doPost(e) {
                 const pKategori = (p.kategori || 'POLI').toUpperCase();
                 if (pKategori !== targetKategori) return;
 
-                const pName = p.nama.toLowerCase();
-                let matchedKey = Object.keys(parsedData).find(k => pName === k || pName.includes(k) || k.includes(pName));
+                const pName = p.nama ? String(p.nama).toLowerCase() : '';
+                
+                let matchedKey = Object.keys(parsedData).find(k => {
+                    const kHasPendek = k.includes('pendek');
+                    const pHasPendek = pName.includes('pendek');
+                    
+                    // Jangan cross-match antara tipe pendek dan tipe panjang (utama)
+                    if (kHasPendek !== pHasPendek) return false;
+                    
+                    const baseK = k.replace('pendek', '').trim();
+                    const baseP = pName.replace('pendek', '').trim();
+                    
+                    return baseP === baseK || baseP.includes(baseK) || baseK.includes(baseP);
+                });
                 
                 if (matchedKey) {
                     const newData = parsedData[matchedKey];
@@ -1389,7 +1471,12 @@ function doPost(e) {
             const search = document.getElementById('search-rekap').value.toLowerCase();
             container.innerHTML = '';
 
-            let filtered = state.products.filter(p => p.nama.toLowerCase().includes(search) || p.sku.toLowerCase().includes(search));
+            // Menambahkan String() untuk mencegah error "p.sku.toLowerCase is not a function"
+            let filtered = state.products.filter(p => {
+                const safeNama = p.nama ? String(p.nama).toLowerCase() : '';
+                const safeSku = p.sku ? String(p.sku).toLowerCase() : '';
+                return safeNama.includes(search) || safeSku.includes(search);
+            });
 
             if(filtered.length === 0) {
                 container.innerHTML = `<div class="col-span-full text-center py-12 text-slate-500 text-sm glass-card rounded-2xl">Data produk tidak ditemukan</div>`;
@@ -1436,7 +1523,7 @@ function doPost(e) {
 
                 const card = document.createElement('div');
                 card.className = 'glass-card p-5 rounded-3xl flex flex-col gap-5 border border-slate-800/80 hover:border-slate-700/60 hover:shadow-2xl hover:shadow-amber-500/5 transition-all duration-300 fade-in';
-                const safeNama = p.nama.replace(/'/g, "\\'");
+                const safeNama = p.nama ? String(p.nama).replace(/'/g, "\\'") : '';
 
                 card.innerHTML = `
                     <div class="flex items-center gap-4">
