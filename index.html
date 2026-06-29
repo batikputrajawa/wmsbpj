@@ -146,19 +146,19 @@
                     </div>
                     <div class="glass-card p-4 rounded-2xl bg-gradient-to-br from-emerald-900/40 to-slate-900 border-emerald-500/20">
                         <div class="flex justify-between items-start mb-2">
-                            <span class="text-[10px] sm:text-xs text-emerald-400 font-semibold uppercase tracking-wider">Masuk Hari Ini</span>
+                            <span class="text-[10px] sm:text-xs text-emerald-400 font-semibold uppercase tracking-wider">Stok Masuk Baru</span>
                             <i class="fas fa-arrow-turn-down text-emerald-500"></i>
                         </div>
                         <h3 id="dash-masuk-hari-ini" class="text-2xl sm:text-3xl font-bold text-white">0</h3>
-                        <p class="text-[10px] text-emerald-500/70 mt-1">Penambahan Stok</p>
+                        <p class="text-[10px] text-emerald-500/70 mt-1">Sejak Update Terakhir</p>
                     </div>
                     <div class="glass-card p-4 rounded-2xl bg-gradient-to-br from-rose-900/40 to-slate-900 border-rose-500/20">
                         <div class="flex justify-between items-start mb-2">
-                            <span class="text-[10px] sm:text-xs text-rose-400 font-semibold uppercase tracking-wider">Keluar Hari Ini</span>
+                            <span class="text-[10px] sm:text-xs text-rose-400 font-semibold uppercase tracking-wider">Stok Keluar Baru</span>
                             <i class="fas fa-arrow-turn-up text-rose-500"></i>
                         </div>
                         <h3 id="dash-keluar-hari-ini" class="text-2xl sm:text-3xl font-bold text-white">0</h3>
-                        <p class="text-[10px] text-rose-500/70 mt-1">Pengurangan Stok</p>
+                        <p class="text-[10px] text-rose-500/70 mt-1">Sejak Update Terakhir</p>
                     </div>
                 </div>
 
@@ -1305,18 +1305,27 @@ function doPost(e) {
                 }
             });
 
-            let inToday = 0; let outToday = 0;
+            // Cari waktu update terakhir (Sinkronisasi atau Reset)
+            let lastSyncTime = 0;
+            const lastSyncLog = state.logs.find(l => l.action.includes('Sinkronisasi') || l.action.includes('Reset Stok'));
+            if (lastSyncLog) {
+                lastSyncTime = new Date(lastSyncLog.date).getTime();
+            }
+
+            let inRecent = 0; let outRecent = 0;
             state.transactions.forEach(t => {
-                if (t.date.startsWith(today)) {
-                    if (t.type === 'IN') inToday += t.qty;
-                    if (t.type === 'OUT') outToday += t.qty;
+                const tTime = new Date(t.date).getTime();
+                // Hanya hitung jika transaksi terjadi SETELAH update/sinkronisasi terakhir
+                if (tTime > lastSyncTime) {
+                    if (t.type === 'IN') inRecent += t.qty;
+                    if (t.type === 'OUT') outRecent += t.qty;
                 }
             });
 
             document.getElementById('dash-total-produk').innerText = state.products.length;
             document.getElementById('dash-total-stok').innerText = totalStok.toLocaleString('id-ID');
-            document.getElementById('dash-masuk-hari-ini').innerText = inToday.toLocaleString('id-ID');
-            document.getElementById('dash-keluar-hari-ini').innerText = outToday.toLocaleString('id-ID');
+            document.getElementById('dash-masuk-hari-ini').innerText = inRecent.toLocaleString('id-ID');
+            document.getElementById('dash-keluar-hari-ini').innerText = outRecent.toLocaleString('id-ID');
 
             document.getElementById('dash-katun-sku').innerText = katunSku;
             document.getElementById('dash-katun-stok').innerText = katunStok.toLocaleString('id-ID');
